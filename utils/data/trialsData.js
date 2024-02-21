@@ -28,7 +28,7 @@ const deleteTrial = (id) => new Promise((resolve, reject) => {
 });
 
 const createTrial = (trial) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/trials`, {
+  fetch(`${clientCredentials.databaseURL}/clinical_trials`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ const updateTrial = (trial) => new Promise((resolve, reject) => {
 });
 
 const getStudyTypes = () => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/study_type`, {
+  fetch(`${clientCredentials.databaseURL}/study_types`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

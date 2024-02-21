@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useRouter } from 'next/router';
 import { Card, Button } from 'react-bootstrap';
+// import Link from 'next/link';
 import { deleteTrial } from '../utils/data/trialsData';
 
 export default function TrialCard({ trialObj, onUpdate }) {
@@ -21,6 +22,7 @@ export default function TrialCard({ trialObj, onUpdate }) {
   }
 
   return (
+
     <Card style={{ width: '18rem' }} className="card-color">
       <Card.Header>
         <div className="d-flex justify-content-between">
@@ -56,7 +58,7 @@ TrialCard.propTypes = {
   trialObj: PropTypes.shape({
     id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
-    nct_id: PropTypes.number.isRequired,
+    nct_id: PropTypes.string.isRequired,
     overall_status: PropTypes.string.isRequired,
     brief_summary: PropTypes.string.isRequired,
     detail_description: PropTypes.string.isRequired,

@@ -9,8 +9,8 @@ const initialState = {
   nct_id: '',
   title: '',
   brief_title: '',
-  study_type: 0,
-  overall_Status: '',
+  study_type: {},
+  overall_status: '',
   brief_summary: '',
   detail_description: '',
   phase: '',
@@ -35,14 +35,14 @@ const TrialForm = ({ trialObj }) => {
         title: trialObj.title,
         brief_title: trialObj.brief_title,
         study_type: trialObj.study_type?.id,
-        overall_Status: trialObj.overall_Status,
+        overall_status: trialObj.overall_status,
         brief_summary: trialObj.brief_summary,
         detail_description: trialObj.detail_description,
         phase: trialObj.phase,
         eligibility: trialObj.eligibility,
         study_first_submit_date: trialObj.study_first_submit_date,
         last_update_submit_date: trialObj.last_update_submit_date,
-        userId: user.uid,
+        user_id: user.id,
       });
     }
   }, [trialObj, user]);
@@ -61,36 +61,36 @@ const TrialForm = ({ trialObj }) => {
     if (trialObj.id) {
       const update = {
         id: trialObj.id,
-        nct_id: Number(formTrialData.nct_id),
+        nct_id: formTrialData.nct_id,
         title: formTrialData.title,
         brief_title: formTrialData.brief_title,
         study_type: Number(formTrialData.study_type),
-        overall_Status: formTrialData.overall_Status,
+        overall_status: formTrialData.overall_status,
         brief_summary: formTrialData.brief_summary,
         detail_description: formTrialData.detail_description,
         phase: formTrialData.phase,
         eligibility: formTrialData.eligibility,
         study_first_submit_date: formTrialData.study_first_submit_date,
         last_update_submit_date: formTrialData.last_update_submit_date,
-        userId: user.uid,
+        user_id: user.id,
       };
-      updateTrial(update, user.uid).then(() => router.push('/trials'));
+      updateTrial(update).then(() => router.push('/'));
     } else {
       const trial = {
-        nct_id: Number(formTrialData.nct_id),
+        nct_id: formTrialData.nct_id,
         title: formTrialData.title,
         brief_title: formTrialData.brief_title,
         study_type: Number(formTrialData.study_type),
-        overall_Status: formTrialData.overall_Status,
+        overall_status: formTrialData.overall_status,
         brief_summary: formTrialData.brief_summary,
         detail_description: formTrialData.detail_description,
         phase: formTrialData.phase,
         eligibility: formTrialData.eligibility,
         study_first_submit_date: formTrialData.study_first_submit_date,
         last_update_submit_date: formTrialData.last_update_submit_date,
-        userId: user.uid,
+        user_id: user.id,
       };
-      createTrial(trial, user.uid).then(() => router.push('/trials'));
+      createTrial(trial).then(() => router.push('/'));
     }
   };
 
@@ -111,7 +111,7 @@ const TrialForm = ({ trialObj }) => {
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Status</Form.Label>
-          <Form.Control name="overall_Status" required value={formTrialData.overall_Status} onChange={handleChange} />
+          <Form.Control name="overall_status" required value={formTrialData.overall_status} onChange={handleChange} />
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Brief Summary</Form.Label>
@@ -131,11 +131,23 @@ const TrialForm = ({ trialObj }) => {
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Study first submit date</Form.Label>
-          <Form.Control name="study_first_submit_date" required value={formTrialData.study_first_submit_date} onChange={handleChange} />
+          <Form.Control
+            type="date"
+            name="study_first_submit_date"
+            required
+            value={formTrialData.study_first_submit_date}
+            onChange={handleChange}
+          />
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Last update submit date</Form.Label>
-          <Form.Control name="last_update_submit_date" required value={formTrialData.last_update_submit_date} onChange={handleChange} />
+          <Form.Control
+            type="date"
+            name="last_update_submit_date"
+            required
+            value={formTrialData.last_update_submit_date}
+            onChange={handleChange}
+          />
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Study Type</Form.Label>
@@ -162,10 +174,10 @@ const TrialForm = ({ trialObj }) => {
 TrialForm.propTypes = {
   trialObj: PropTypes.shape({
     id: PropTypes.number,
-    nct_id: PropTypes.number,
+    nct_id: PropTypes.string,
     title: PropTypes.string,
     brief_title: PropTypes.string,
-    overall_Status: PropTypes.string,
+    overall_status: PropTypes.string,
     brief_summary: PropTypes.string,
     detail_description: PropTypes.string,
     phase: PropTypes.string,

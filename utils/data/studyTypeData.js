@@ -1,7 +1,7 @@
 import { clientCredentials } from '../client';
 
 const getSingleStudyType = (id) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/study_type/${id}`, {
+  fetch(`${clientCredentials.databaseURL}/study_types/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -13,7 +13,7 @@ const getSingleStudyType = (id) => new Promise((resolve, reject) => {
 });
 
 const createStudyType = (studyType) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/study_type`, {
+  fetch(`${clientCredentials.databaseURL}/study_types`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
