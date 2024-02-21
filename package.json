@@ -1,15 +1,14 @@
 {
-  "name": "next-firebase-starter",
+  "name": "TrialsTrack",
   "private": true,
   "version": "1.0.0",
-  "author": "Trinity Christiana",
+  "author": "Kirthana Sukumaran",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prepare": "husky install",
-    "pre-commit": "next lint"
+    "prepare": "husky install"
   },
   "lint-staged": {
     "*.{js,jsx}": [
