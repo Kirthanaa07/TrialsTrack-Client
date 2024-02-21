@@ -7,8 +7,8 @@ import { deleteTrial } from '../utils/data/trialsData';
 
 export default function TrialCard({ trialObj, onUpdate }) {
   const router = useRouter();
-  const deleteThisOrder = () => {
-    if (window.confirm('Delete this order?')) {
+  const deleteThisTrial = () => {
+    if (window.confirm('Delete this Trial?')) {
       deleteTrial(trialObj.id).then(() => onUpdate());
     }
   };
@@ -46,7 +46,7 @@ export default function TrialCard({ trialObj, onUpdate }) {
         <Button variant="success" type="edit" onClick={() => editTrial(trialObj.id)}>
           Edit
         </Button>
-        <Button variant="danger" type="delete" onClick={deleteThisOrder}>
+        <Button variant="danger" type="delete" onClick={deleteThisTrial}>
           Delete
         </Button>
       </Card.Footer>
