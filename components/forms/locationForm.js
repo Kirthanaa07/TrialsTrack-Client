@@ -18,6 +18,7 @@ const LocationForm = ({ existingLocation }) => {
   const [formLocationData, setFormLocationData] = useState(initialState);
 
   const router = useRouter();
+  const { locationId } = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -58,7 +59,7 @@ const LocationForm = ({ existingLocation }) => {
         country: formLocationData.country,
         user_id: user.id,
       };
-      updateLocation(update).then(() => router.push('/locations'));
+      updateLocation(update).then(() => router.push(`/locations/${locationId}`));
     } else {
       const location = {
         name: formLocationData.name,

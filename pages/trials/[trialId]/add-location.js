@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getSingleTrial } from '../../../utils/data/trialsData';
-import AddLocationForm from '../../../components/forms/locationForm';
+import AddLocationForm from '../../../components/forms/addLocationForm';
 
 const AddLocation = () => {
   const router = useRouter();

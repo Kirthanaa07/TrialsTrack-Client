@@ -1,4 +1,4 @@
-import LocationForm from '../../components/forms/addLocationForm';
+import LocationForm from '../../components/forms/locationForm';
 
 const NewLocation = () => (
   <div className="p-3">

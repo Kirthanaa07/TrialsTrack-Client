@@ -1,32 +1,33 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { Button, Form } from 'react-bootstrap';
-import { updateTrial } from '../../utils/data/trialsData';
+import { getLocations } from '../../utils/data/locationData';
+import { createTrialLocation, updateTrialLocation } from '../../utils/data/trialLocationData';
 
 const initialState = {
-  name: '',
+  location_id: '',
+  clinical_trial_id: '',
   status: '',
-  // user_id: 0,
 };
 
-const AddLocationForm = ({ locationObj }) => {
+const AddLocationForm = ({ clinicalLocationObj }) => {
   const [addLocationFormData, setAddLocationFormData] = useState(initialState);
+  const [locations, setLocations] = useState([]);
   const router = useRouter();
   const { trialId } = useRouter();
 
-  const handleSave = (e) => {
-    e.preventDefault();
-
-    if (locationObj.id) {
-      const update = {
-        id: locationObj.id,
-        name: addLocationFormData.name,
-        status: addLocationFormData.status,
-      };
-      updateTrial(update).then(() => router.push(`/trials/${trialId}`));
+  useEffect(() => {
+    getLocations().then((data) => setLocations(data));
+    if (clinicalLocationObj.id) {
+      setAddLocationFormData({
+        id: clinicalLocationObj.id,
+        location_id: clinicalLocationObj.location.id,
+        clinical_trial_id: clinicalLocationObj.clinical_trial.id,
+        status: clinicalLocationObj.status,
+      });
     }
-  };
+  }, [clinicalLocationObj]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,22 +37,41 @@ const AddLocationForm = ({ locationObj }) => {
     }));
   };
 
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    if (clinicalLocationObj.id) {
+      const update = {
+        id: clinicalLocationObj.id,
+        location_id: addLocationFormData.location_id,
+        clinical_trial_id: addLocationFormData.clinical_trial_id,
+        status: addLocationFormData.status,
+      };
+      updateTrialLocation(update).then(() => router.push(`/trials/${trialId}`));
+    } else {
+      const trialLocation = {
+        location_id: addLocationFormData.location_id,
+        clinical_trial_id: addLocationFormData.clinical_trial_id,
+        status: addLocationFormData.status,
+      };
+      createTrialLocation(trialLocation).then(() => router.push(`/trials/${trialId}`));
+    }
+  };
+
   return (
     <Form onSubmit={handleSave}>
       <Form.Group className="mb-3">
         <Form.Label>Location</Form.Label>
         <Form.Select
-          name="name"
+          name="location_id"
           required
-          value={addLocationFormData.name}
+          value={addLocationFormData.location_id}
           onChange={handleChange}
         >
           <option value="">Select a Location</option>
-          <option value="Golden Gate Bridge">Golden Gate Bridge</option>
-          <option value="Eiffel Tower">Eiffel Tower</option>
-          <option value="Sydney Opera House">Sydney Opera House</option>
-          <option value="Taj Mahal">Taj Mahal</option>
-          <option value="Great Wall of China">Great Wall of China</option>
+          {locations.map((location) => (
+            <option key={location.id} value={location.id}>{location.name}</option>
+          ))}
         </Form.Select>
       </Form.Group>
       <br />
@@ -78,15 +98,21 @@ const AddLocationForm = ({ locationObj }) => {
 };
 
 AddLocationForm.propTypes = {
-  locationObj: PropTypes.shape({
+  clinicalLocationObj: PropTypes.shape({
     id: PropTypes.number,
-    name: PropTypes.string,
     status: PropTypes.string,
+    location: PropTypes.shape({
+      id: PropTypes.number,
+      name: PropTypes.string,
+    }),
+    clinical_trial: PropTypes.shape({
+      id: PropTypes.number,
+    }),
   }),
 };
 
 AddLocationForm.defaultProps = {
-  locationObj: initialState,
+  clinicalLocationObj: initialState,
 };
 
 export default AddLocationForm;
