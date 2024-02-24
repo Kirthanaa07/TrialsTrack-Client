@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useAuth } from '../../utils/context/authContext';
-import { createLocation, getLocations, updateLocation } from '../../utils/data/locationData';
+import { createLocation, updateLocation } from '../../utils/data/locationData';
 
 const initialState = {
   name: '',
@@ -18,11 +18,10 @@ const LocationForm = ({ existingLocation }) => {
   const [formLocationData, setFormLocationData] = useState(initialState);
 
   const router = useRouter();
-  const { locationId } = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
-    getLocations().then(setFormLocationData);
+    // getLocations().then(setFormLocationData);
     if (existingLocation.id) {
       setFormLocationData({
         id: existingLocation.id,
@@ -30,7 +29,7 @@ const LocationForm = ({ existingLocation }) => {
         address: existingLocation.address,
         city: existingLocation.city,
         state: existingLocation.state,
-        zip: Number(existingLocation.zip),
+        zip: existingLocation.zip ? Number(existingLocation.zip) : '',
         country: existingLocation.country,
         user_id: user.id,
       });
@@ -59,7 +58,7 @@ const LocationForm = ({ existingLocation }) => {
         country: formLocationData.country,
         user_id: user.id,
       };
-      updateLocation(update).then(() => router.push(`/locations/${locationId}`));
+      updateLocation(update).then(() => router.push('/locations'));
     } else {
       const location = {
         name: formLocationData.name,
@@ -70,7 +69,7 @@ const LocationForm = ({ existingLocation }) => {
         country: formLocationData.country,
         user_id: user.id,
       };
-      createLocation(location).then(() => router.push('/'));
+      createLocation(location).then(() => router.push('/locations'));
     }
   };
 
@@ -96,7 +95,7 @@ const LocationForm = ({ existingLocation }) => {
         <Form.Group className="mb-3">
           <Form.Label>Zip</Form.Label>
           <Form.Control
-            type="integer"
+            type="number"
             name="zip"
             required
             value={formLocationData.zip}
