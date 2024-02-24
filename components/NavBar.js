@@ -8,8 +8,10 @@ import {
   Button,
 } from 'react-bootstrap';
 import { signOut } from '../utils/auth';
+import { useAuth } from '../utils/context/authContext';
 
 export default function NavBar() {
+  const { user } = useAuth();
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -18,20 +20,28 @@ export default function NavBar() {
         </Link>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav className="me-auto">
+          <Nav className="me-auto d-flex flex-grow-1 flex-row justify-content-between">
             {/* CLOSE NAVBAR ON LINK SELECTION: https://stackoverflow.com/questions/72813635/collapse-on-select-react-bootstrap-navbar-with-nextjs-not-working */}
-            <Link passHref href="/">
-              <Nav.Link>Trials</Nav.Link>
-            </Link>
-            <Link passHref href="/locations">
-              <Nav.Link>Locations</Nav.Link>
-            </Link>
-            <Link passHref href="/trials/new">
-              <Nav.Link>Create a Trial</Nav.Link>
-            </Link>
-            <Button variant="danger" onClick={signOut}>
-              Sign Out
-            </Button>
+            <div className="d-flex flex-row gap-2">
+              <Link passHref href="/">
+                <Nav.Link>Trials</Nav.Link>
+              </Link>
+              <Link passHref href="/locations">
+                <Nav.Link>Locations</Nav.Link>
+              </Link>
+              <Link passHref href="/trials/new">
+                <Nav.Link>Create a Trial</Nav.Link>
+              </Link>
+              <Link passHref href="/locations/new">
+                <Nav.Link>Create a Location</Nav.Link>
+              </Link>
+            </div>
+            <div className="d-flex flex-row gap-2">
+              <Navbar.Text>{user.fbUser.displayName}</Navbar.Text>
+              <Button variant="danger" onClick={signOut}>
+                Sign Out
+              </Button>
+            </div>
           </Nav>
         </Navbar.Collapse>
       </Container>

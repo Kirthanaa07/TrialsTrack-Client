@@ -25,6 +25,10 @@ function SingleTrial() {
     <article className="items p-3">
       <h1> Trials Details </h1>
       <div>{trialDetails.detail_description}</div>
+      <h1> Location and Status</h1>
+      {trialDetails.locations && trialDetails.locations.length > 0 ? trialDetails.locations.map((trialLocation) => (
+        <div key={trialLocation.id}>{trialLocation.location.name} - {trialLocation.status}</div>
+      )) : <></>}
       <Button variant="success" type="payment" onClick={addLocation}>
         Add Location
       </Button>

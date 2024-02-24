@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-// import { useAuth } from '../utils/context/authContext';
 import { useRouter } from 'next/router';
 import { Button } from 'react-bootstrap';
 import { getTrials } from '../utils/data/trialsData';
 import TrialCard from '../components/TrialCard';
+import { useAuth } from '../utils/context/authContext';
 
 function Home() {
   const [trials, setTrials] = useState([]);
   const router = useRouter();
-  // const { user } = useAuth();
+  const { user } = useAuth();
 
   const getAllTrials = () => {
-    getTrials().then(setTrials);
+    getTrials(user.id).then(setTrials);
   };
 
   useEffect(() => {

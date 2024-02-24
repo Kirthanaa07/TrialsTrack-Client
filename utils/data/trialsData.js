@@ -1,7 +1,7 @@
 import { clientCredentials } from '../client';
 
-const getTrials = () => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/clinical_trials`)
+const getTrials = (userId) => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/clinical_trials?user_id=${userId}`)
     .then((response) => response.json())
     .then(resolve)
     .catch(reject);

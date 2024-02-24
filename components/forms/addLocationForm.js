@@ -63,11 +63,11 @@ const AddLocationForm = () => {
           onChange={handleChange}
         >
           <option value="">Select a Status</option>
-          <option value="Golden Gate Bridge">Active</option>
-          <option value="Eiffel Tower">Not-Recruiting</option>
-          <option value="Sydney Opera House">Active</option>
-          <option value="Taj Mahal">Non - Active</option>
-          <option value="Great Wall of China">Recruiting</option>
+          <option value="Active">Active</option>
+          <option value="Not-Recruiting">Not-Recruiting</option>
+          <option value="Active">Active</option>
+          <option value="Non - Active">Non - Active</option>
+          <option value="Recruiting">Recruiting</option>
         </Form.Select>
       </Form.Group>
       <br />
