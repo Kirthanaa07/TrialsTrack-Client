@@ -1,92 +1,130 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
+import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { updateTrial } from '../../utils/data/trialsData';
+import { useAuth } from '../../utils/context/authContext';
+import { createLocation, updateLocation } from '../../utils/data/locationData';
 
 const initialState = {
   name: '',
-  status: '',
-  // user_id: 0,
+  address: '',
+  city: '',
+  state: '',
+  zip: 0,
+  country: '',
 };
 
-const AddLocationForm = ({ locationObj }) => {
-  const [addLocationFormData, setAddLocationFormData] = useState(initialState);
+const LocationForm = ({ existingLocation }) => {
+  const [formLocationData, setFormLocationData] = useState(initialState);
+
   const router = useRouter();
-  const { trialId } = useRouter();
+  const { user } = useAuth();
 
-  const handleSave = (e) => {
-    e.preventDefault();
-
-    if (locationObj.id) {
-      const update = {
-        id: locationObj.id,
-        name: addLocationFormData.name,
-        status: addLocationFormData.status,
-      };
-      updateTrial(update).then(() => router.push(`/trials/${trialId}`));
+  useEffect(() => {
+    // getLocations().then(setFormLocationData);
+    if (existingLocation.id) {
+      setFormLocationData({
+        id: existingLocation.id,
+        name: existingLocation.name,
+        address: existingLocation.address,
+        city: existingLocation.city,
+        state: existingLocation.state,
+        zip: existingLocation.zip ? Number(existingLocation.zip) : '',
+        country: existingLocation.country,
+        user_id: user.id,
+      });
     }
-  };
+  }, [existingLocation, user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setAddLocationFormData((prevState) => ({
+    setFormLocationData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (existingLocation.id) {
+      const update = {
+        id: formLocationData.id,
+        name: formLocationData.name,
+        address: formLocationData.address,
+        city: formLocationData.city,
+        state: formLocationData.state,
+        zip: Number(formLocationData.zip),
+        country: formLocationData.country,
+        user_id: user.id,
+      };
+      updateLocation(update).then(() => router.push('/locations'));
+    } else {
+      const location = {
+        name: formLocationData.name,
+        address: formLocationData.address,
+        city: formLocationData.city,
+        state: formLocationData.state,
+        zip: Number(formLocationData.zip),
+        country: formLocationData.country,
+        user_id: user.id,
+      };
+      createLocation(location).then(() => router.push('/locations'));
+    }
+  };
+
   return (
-    <Form onSubmit={handleSave}>
-      <Form.Group className="mb-3">
-        <Form.Label>Location</Form.Label>
-        <Form.Select
-          name="name"
-          required
-          value={addLocationFormData.name}
-          onChange={handleChange}
-        >
-          <option value="">Select a Location</option>
-          <option value="Golden Gate Bridge">Golden Gate Bridge</option>
-          <option value="Eiffel Tower">Eiffel Tower</option>
-          <option value="Sydney Opera House">Sydney Opera House</option>
-          <option value="Taj Mahal">Taj Mahal</option>
-          <option value="Great Wall of China">Great Wall of China</option>
-        </Form.Select>
-      </Form.Group>
-      <br />
-      <Form.Group className="mb-3">
-        <Form.Label>Status</Form.Label>
-        <Form.Select
-          name="status"
-          required
-          value={addLocationFormData.status}
-          onChange={handleChange}
-        >
-          <option value="">Select a Status</option>
-          <option value="Golden Gate Bridge">Golden Gate Bridge</option>
-          <option value="Eiffel Tower">Eiffel Tower</option>
-          <option value="Sydney Opera House">Sydney Opera House</option>
-          <option value="Taj Mahal">Taj Mahal</option>
-          <option value="Great Wall of China">Great Wall of China</option>
-        </Form.Select>
-      </Form.Group>
-      <br />
-      <Button className="mt-5 mb-5" variant="primary" type="submit"> Save </Button>
-    </Form>
+    <>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group className="mb-3">
+          <Form.Label>Name</Form.Label>
+          <Form.Control name="name" required value={formLocationData.name} onChange={handleChange} />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Address</Form.Label>
+          <Form.Control name="address" required value={formLocationData.address} onChange={handleChange} />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>City</Form.Label>
+          <Form.Control name="city" required value={formLocationData.city} onChange={handleChange} />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>State</Form.Label>
+          <Form.Control name="state" required value={formLocationData.state} onChange={handleChange} />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Zip</Form.Label>
+          <Form.Control
+            type="number"
+            name="zip"
+            required
+            value={formLocationData.zip}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Country</Form.Label>
+          <Form.Control name="country" required value={formLocationData.country} onChange={handleChange} />
+        </Form.Group>
+        <Button variant="primary" type="submit"> {existingLocation.id ? 'Update' : 'Create'} Location </Button>
+      </Form>
+    </>
   );
 };
 
-AddLocationForm.propTypes = {
-  locationObj: PropTypes.shape({
+LocationForm.propTypes = {
+  existingLocation: PropTypes.shape({
     id: PropTypes.number,
     name: PropTypes.string,
-    status: PropTypes.string,
+    address: PropTypes.string,
+    city: PropTypes.string,
+    state: PropTypes.string,
+    zip: PropTypes.number,
+    country: PropTypes.string,
   }),
 };
 
-AddLocationForm.defaultProps = {
-  locationObj: initialState,
+LocationForm.defaultProps = {
+  existingLocation: initialState,
 };
-
-export default AddLocationForm;
+export default LocationForm;

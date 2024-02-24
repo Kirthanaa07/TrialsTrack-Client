@@ -8,11 +8,9 @@ import { createTrial, getStudyTypes, updateTrial } from '../../utils/data/trials
 const initialState = {
   nct_id: '',
   title: '',
-  brief_title: '',
   study_type: {},
   overall_status: '',
   brief_summary: '',
-  detail_description: '',
   phase: '',
   eligibility: '',
   study_first_submit_date: '',
@@ -33,11 +31,8 @@ const TrialForm = ({ trialObj }) => {
         id: trialObj.id,
         nct_id: trialObj.nct_id,
         title: trialObj.title,
-        brief_title: trialObj.brief_title,
         study_type: trialObj.study_type?.id,
         overall_status: trialObj.overall_status,
-        brief_summary: trialObj.brief_summary,
-        detail_description: trialObj.detail_description,
         phase: trialObj.phase,
         eligibility: trialObj.eligibility,
         study_first_submit_date: trialObj.study_first_submit_date,
@@ -63,11 +58,8 @@ const TrialForm = ({ trialObj }) => {
         id: trialObj.id,
         nct_id: formTrialData.nct_id,
         title: formTrialData.title,
-        brief_title: formTrialData.brief_title,
         study_type: Number(formTrialData.study_type),
         overall_status: formTrialData.overall_status,
-        brief_summary: formTrialData.brief_summary,
-        detail_description: formTrialData.detail_description,
         phase: formTrialData.phase,
         eligibility: formTrialData.eligibility,
         study_first_submit_date: formTrialData.study_first_submit_date,
@@ -79,11 +71,8 @@ const TrialForm = ({ trialObj }) => {
       const trial = {
         nct_id: formTrialData.nct_id,
         title: formTrialData.title,
-        brief_title: formTrialData.brief_title,
         study_type: Number(formTrialData.study_type),
         overall_status: formTrialData.overall_status,
-        brief_summary: formTrialData.brief_summary,
-        detail_description: formTrialData.detail_description,
         phase: formTrialData.phase,
         eligibility: formTrialData.eligibility,
         study_first_submit_date: formTrialData.study_first_submit_date,
@@ -106,20 +95,8 @@ const TrialForm = ({ trialObj }) => {
           <Form.Control name="title" required value={formTrialData.title} onChange={handleChange} />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Brief Title</Form.Label>
-          <Form.Control name="brief_title" required value={formTrialData.brief_title} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
           <Form.Label>Status</Form.Label>
           <Form.Control name="overall_status" required value={formTrialData.overall_status} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Brief Summary</Form.Label>
-          <Form.Control name="brief_summary" required value={formTrialData.brief_summary} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Detail Description</Form.Label>
-          <Form.Control name="detail_description" required value={formTrialData.detail_description} onChange={handleChange} />
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Phase</Form.Label>
@@ -176,10 +153,7 @@ TrialForm.propTypes = {
     id: PropTypes.number,
     nct_id: PropTypes.string,
     title: PropTypes.string,
-    brief_title: PropTypes.string,
     overall_status: PropTypes.string,
-    brief_summary: PropTypes.string,
-    detail_description: PropTypes.string,
     phase: PropTypes.string,
     eligibility: PropTypes.string,
     study_first_submit_date: PropTypes.string,

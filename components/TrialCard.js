@@ -7,8 +7,8 @@ import { deleteTrial } from '../utils/data/trialsData';
 
 export default function TrialCard({ trialObj, onUpdate }) {
   const router = useRouter();
-  const deleteThisOrder = () => {
-    if (window.confirm('Delete this order?')) {
+  const deleteThisTrial = () => {
+    if (window.confirm('Delete this Trial?')) {
       deleteTrial(trialObj.id).then(() => onUpdate());
     }
   };
@@ -28,14 +28,12 @@ export default function TrialCard({ trialObj, onUpdate }) {
         <div className="d-flex justify-content-between">
           <span>{trialObj.title}</span>
           <span>{trialObj.nct_id}</span>
-          <span>{trialObj.overall_status}</span>
         </div>
       </Card.Header>
-      <Card.Body><Card.Text>{trialObj.study_type.name}</Card.Text>
-        <Card.Text>{trialObj.brief_summary}</Card.Text>
-        <Card.Text>{trialObj.detail_description}</Card.Text>
-        <Card.Text>{trialObj.phase}</Card.Text>
+      <Card.Body><Card.Text>{trialObj.phase}</Card.Text>
         <Card.Text>{trialObj.eligibility}</Card.Text>
+        <Card.Text>{trialObj.overall_status}</Card.Text>
+        <Card.Text>{trialObj.study_type.name}</Card.Text>
         <Card.Text>{trialObj.study_first_submit_date}</Card.Text>
         <Card.Text>{trialObj.last_update_submit_date}</Card.Text>
       </Card.Body>
@@ -46,7 +44,7 @@ export default function TrialCard({ trialObj, onUpdate }) {
         <Button variant="success" type="edit" onClick={() => editTrial(trialObj.id)}>
           Edit
         </Button>
-        <Button variant="danger" type="delete" onClick={deleteThisOrder}>
+        <Button variant="danger" type="delete" onClick={deleteThisTrial}>
           Delete
         </Button>
       </Card.Footer>
@@ -60,8 +58,6 @@ TrialCard.propTypes = {
     title: PropTypes.string.isRequired,
     nct_id: PropTypes.string.isRequired,
     overall_status: PropTypes.string.isRequired,
-    brief_summary: PropTypes.string.isRequired,
-    detail_description: PropTypes.string.isRequired,
     phase: PropTypes.string.isRequired,
     eligibility: PropTypes.string.isRequired,
     study_first_submit_date: PropTypes.string.isRequired,
