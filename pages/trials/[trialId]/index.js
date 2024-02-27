@@ -2,20 +2,31 @@ import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import { getSingleTrial } from '../../../utils/data/trialsData';
+import { deleteTrialLocation } from '../../../utils/data/trialLocationData';
 
 function SingleTrial() {
   const [trialDetails, setTrialDetails] = useState({
     locations: {},
   });
   const router = useRouter();
-
   const { trialId } = router.query;
 
-  useEffect(() => {
+  const getTrial = () => {
     getSingleTrial(trialId).then((data) => {
       setTrialDetails(data);
     });
-  }, [trialId]);
+  };
+
+  const deleteThisLocation = (trialLocationId) => {
+    if (window.confirm('Delete this Location?')) {
+      deleteTrialLocation(trialLocationId);
+      getTrial();
+    }
+  };
+
+  useEffect(() => {
+    getTrial();
+  }, [getTrial]);
 
   const addLocation = () => {
     router.push(`/trials/${trialId}/add-location`);
@@ -26,9 +37,15 @@ function SingleTrial() {
       <h1> Trials Details </h1>
       <div>{trialDetails.detail_description}</div>
       <h1> Location and Status</h1>
-      {trialDetails.locations && trialDetails.locations.length > 0 ? trialDetails.locations.map((trialLocation) => (
-        <div key={trialLocation.id}>{trialLocation.location.name} - {trialLocation.status}</div>
-      )) : <></>}
+      <div className="d-flex flex-column gap-2">
+        {trialDetails.locations && trialDetails.locations.length > 0 ? trialDetails.locations.map((trialLocation) => (
+          <div className="d-flex flex-row gap-3" key={trialLocation.id}>{trialLocation.location.name} - {trialLocation.status}
+            <Button variant="danger" type="delete" onClick={() => deleteThisLocation(trialLocation.id)}>
+              Delete
+            </Button>
+          </div>
+        )) : <></>}
+      </div>
       <Button variant="success" type="payment" onClick={addLocation}>
         Add Location
       </Button>
