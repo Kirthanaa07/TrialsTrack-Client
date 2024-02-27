@@ -1,7 +1,7 @@
 import { clientCredentials } from '../client';
 
-const getLocations = () => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/locations`)
+const getLocations = (userId) => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/locations?user_id=${userId}`)
     .then((response) => response.json())
     .then(resolve)
     .catch(reject);

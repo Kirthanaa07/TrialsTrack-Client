@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { Button, Form } from 'react-bootstrap';
 import { getLocations } from '../../utils/data/locationData';
 import { createTrialLocation } from '../../utils/data/trialLocationData';
+import { useAuth } from '../../utils/context/authContext';
 
 const initialState = {
   location_id: '',
@@ -14,9 +15,10 @@ const AddLocationForm = () => {
   const [locations, setLocations] = useState([]);
   const router = useRouter();
   const { trialId } = router.query;
+  const { user } = useAuth();
 
   useEffect(() => {
-    getLocations().then((data) => setLocations(data));
+    getLocations(user.id).then((data) => setLocations(data));
   }, []);
 
   const handleChange = (e) => {
