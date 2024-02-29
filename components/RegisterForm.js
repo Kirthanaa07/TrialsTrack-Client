@@ -1,6 +1,8 @@
+'use client';
+
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
+import { Button } from '@nextui-org/react';
 import Form from 'react-bootstrap/Form';
 import { registerUser } from '../utils/auth'; // Update with path to registerUser
 

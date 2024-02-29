@@ -1,7 +1,9 @@
+'use client';
+
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useRouter } from 'next/router';
-import { Card, Button } from 'react-bootstrap';
+import { useRouter } from 'next/navigation';
+import { Button, Card } from '@nextui-org/react';
 import { deleteLocation } from '../utils/data/locationData';
 
 export default function LocationCard({ locationObj, onUpdate }) {

@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { Button } from 'react-bootstrap';
-import { useRouter } from 'next/router';
+import { Button } from '@nextui-org/react';
+import { useParams } from 'next/navigation';
 import { getSingleTrial } from '../../../utils/data/trialsData';
 import { deleteTrialLocation } from '../../../utils/data/trialLocationData';
 
@@ -8,8 +10,7 @@ function SingleTrial() {
   const [trialDetails, setTrialDetails] = useState({
     locations: {},
   });
-  const router = useRouter();
-  const { trialId } = router.query;
+  const { trialId } = useParams();
 
   const getTrial = () => {
     getSingleTrial(trialId).then((data) => {

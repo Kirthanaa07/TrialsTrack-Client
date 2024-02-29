@@ -1,6 +1,8 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { Button } from 'react-bootstrap';
+import { useRouter } from 'next/navigation';
+import { Button } from '@nextui-org/react';
 import { getTrials } from '../utils/data/trialsData';
 import TrialCard from '../components/TrialCard';
 import { useAuth } from '../utils/context/authContext';

@@ -1,7 +1,10 @@
-import { useRouter } from 'next/router';
+'use client';
+
+import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
+import { Button } from '@nextui-org/react';
 import { useAuth } from '../../utils/context/authContext';
 import { createLocation, updateLocation } from '../../utils/data/locationData';
 

@@ -1,11 +1,12 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { getSingleTrial } from '../../../utils/data/trialsData';
-import AddLocationForm from '../../../components/forms/addLocationForm';
+import { useParams } from 'next/navigation';
+import { getSingleTrial } from '../../../../utils/data/trialsData';
+import AddLocationForm from '../../../../components/forms/addLocationForm';
 
 const AddLocation = () => {
-  const router = useRouter();
-  const { trialId } = router.query;
+  const { trialId } = useParams();
   const [trial, setTrial] = useState({});
 
   useEffect(() => {

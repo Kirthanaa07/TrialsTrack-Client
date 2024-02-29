@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import Link from 'next/link';
@@ -5,8 +7,8 @@ import {
   Navbar, //
   Container,
   Nav,
-  Button,
 } from 'react-bootstrap';
+import { Button } from '@nextui-org/react';
 import { signOut } from '../utils/auth';
 import { useAuth } from '../utils/context/authContext';
 

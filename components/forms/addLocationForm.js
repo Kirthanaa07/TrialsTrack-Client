@@ -1,6 +1,9 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { Button, Form } from 'react-bootstrap';
+import { useParams } from 'next/navigation';
+import { Form } from 'react-bootstrap';
+import { Button } from '@nextui-org/react';
 import { getLocations } from '../../utils/data/locationData';
 import { createTrialLocation } from '../../utils/data/trialLocationData';
 import { useAuth } from '../../utils/context/authContext';
@@ -13,8 +16,7 @@ const initialState = {
 const AddLocationForm = () => {
   const [addLocationFormData, setAddLocationFormData] = useState(initialState);
   const [locations, setLocations] = useState([]);
-  const router = useRouter();
-  const { trialId } = router.query;
+  const { trialId } = useParams();
   const { user } = useAuth();
 
   useEffect(() => {

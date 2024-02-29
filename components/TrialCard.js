@@ -1,8 +1,11 @@
+'use client';
+
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useRouter } from 'next/router';
-import { Card, Button } from 'react-bootstrap';
+import { useRouter } from 'next/navigation';
+import { Button } from '@nextui-org/react';
 // import Link from 'next/link';
+import { Card } from 'react-bootstrap';
 import { deleteTrial } from '../utils/data/trialsData';
 
 export default function TrialCard({ trialObj, onUpdate }) {
