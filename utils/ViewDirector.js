@@ -19,8 +19,11 @@ const ViewDirectorBasedOnUserAuthStatus = ({ children }) => {
   if (user) {
     return (
       <>
-        <NavBar /> {/* NavBar only visible if user is logged in and is in every view */}
-        <div className="container">{'valid' in user ? <RegisterForm user={user} updateUser={updateUser} /> : children}</div>
+        <div className="flex flex-row">
+          <NavBar /> {/* NavBar only visible if user is logged in and is in every view */}
+        </div>
+        <div className="flex flex-col grow p-4 mt-4 container">{children}</div>
+        {/* <div className="container">{'valid' in user ? <RegisterForm user={user} updateUser={updateUser} /> : children}</div> */}
       </>
     );
   }

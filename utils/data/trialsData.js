@@ -1,14 +1,14 @@
 import { clientCredentials } from '../client';
 
-const getTrials = (userId) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/clinical_trials?user_id=${userId}`)
+const getTrials = () => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/trials`)
     .then((response) => response.json())
     .then(resolve)
     .catch(reject);
 });
 
 const getSingleTrial = (id) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/clinical_trials/${id}`, {
+  fetch(`${clientCredentials.databaseURL}/trials/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ const getSingleTrial = (id) => new Promise((resolve, reject) => {
 });
 
 const deleteTrial = (id) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/clinical_trials/${id}`, {
+  fetch(`${clientCredentials.databaseURL}/trials/${id}`, {
     method: 'DELETE',
   })
     .then(resolve)
@@ -28,7 +28,7 @@ const deleteTrial = (id) => new Promise((resolve, reject) => {
 });
 
 const createTrial = (trial) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/clinical_trials`, {
+  fetch(`${clientCredentials.databaseURL}/trials`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ const createTrial = (trial) => new Promise((resolve, reject) => {
 });
 
 const updateTrial = (trial) => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/clinical_trials/${trial.id}`, {
+  fetch(`${clientCredentials.databaseURL}/trials/${trial.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

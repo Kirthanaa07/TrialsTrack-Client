@@ -1,20 +1,13 @@
 'use client';
 
+import { Spinner } from '@nextui-org/react';
 import React from 'react';
-import {
-  Spinner,
-} from 'react-bootstrap';
 
 export default function Loading() {
   return (
-    <div className="text-center mt-5">
+    <div className="text-center mt-5 flex grow items-center justify-center">
       <Spinner
-        animation="border"
-        style={{
-          color: '#00BF67',
-          width: '100px',
-          height: '100px',
-        }}
+        color="#00BF67"
       />
     </div>
   );

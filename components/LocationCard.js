@@ -3,7 +3,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card } from '@nextui-org/react';
+import { Button, Card, CardHeader, CardBody, CardFooter } from '@nextui-org/react';
 import { deleteLocation } from '../utils/data/locationData';
 
 export default function LocationCard({ locationObj, onUpdate }) {
@@ -20,25 +20,26 @@ export default function LocationCard({ locationObj, onUpdate }) {
 
   return (
     <Card style={{ width: '18rem' }} className="card-color">
-      <Card.Header>
+      <CardHeader>
         <div className="d-flex justify-content-between">
           <span>{locationObj.name}</span>
           <span>{locationObj.address}</span>
           <span>{locationObj.city}</span>
         </div>
-      </Card.Header>
-      <Card.Body><Card.Text>{locationObj.state}</Card.Text>
-        <Card.Text>{locationObj.zip}</Card.Text>
-        <Card.Text>{locationObj.country}</Card.Text>
-      </Card.Body>
-      <Card.Footer className="text-muted d-flex flex-row justify-content-between">
+      </CardHeader>
+      <CardBody>
+        <div>{locationObj.state}</div>
+        <div>{locationObj.zip}</div>
+        <div>{locationObj.country}</div>
+      </CardBody>
+      <CardFooter className="text-muted d-flex flex-row justify-content-between">
         <Button variant="success" type="edit" onClick={() => editLocation(locationObj.id)}>
           Edit
         </Button>
         <Button variant="danger" type="delete" onClick={deleteThisLocation}>
           Delete
         </Button>
-      </Card.Footer>
+      </CardFooter>
     </Card>
   );
 }
