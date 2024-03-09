@@ -14,6 +14,13 @@ export const statusOptions = [
   { name: 'WITHHELD', uid: 'withheld' },
   { name: 'UNKNOWN', uid: 'unknown' },
 ];
+
+export const studyTypeOptions = [
+  { name: 'OBSERVATIONAL', id: 'observational' },
+  { name: 'INTERVENTIONAL', id: 'interventional' },
+  { name: 'EXPANDED ACCESS', id: 'expanded_access' },
+];
+
 export const trialColumns = [
   { name: 'ID', uid: 'id', sortable: true },
   { name: 'NCT', uid: 'nct_id', sortable: true },

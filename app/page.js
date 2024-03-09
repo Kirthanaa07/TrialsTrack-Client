@@ -23,6 +23,7 @@ import {
   ModalHeader,
   ModalContent,
   Modal,
+  Tooltip,
 } from '@nextui-org/react';
 import { getTrials } from '../utils/data/trialsData';
 import { useAuth } from '../utils/context/authContext';
@@ -34,7 +35,6 @@ function Home() {
   const INITIAL_VISIBLE_COLUMNS = ['nct_id', 'title', 'overall_status', 'study_type', 'phase', 'brief_summary', 'actions'];
   const [trials, setTrials] = React.useState([]);
   const [filterValue, setFilterValue] = React.useState('');
-  const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState('all');
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -48,8 +48,11 @@ function Home() {
   const { user } = useAuth();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  function getAllTrials(userId) {
+    getTrials(userId).then(setTrials);
+  }
   React.useEffect(() => {
-    getTrials(user.id).then(setTrials);
+    getAllTrials(user.id);
   }, [user.id]);
 
   const hasSearchFilter = Boolean(filterValue);
@@ -114,20 +117,9 @@ function Home() {
 
       case 'actions':
         return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown aria-label="Action menu">
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <span className="material-symbols-outlined">more_vert</span>
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Action menu">
-                <DropdownItem aria-label="View">View</DropdownItem>
-                <DropdownItem aria-label="Edit">Edit</DropdownItem>
-                <DropdownItem aria-label="Delete">Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
+          <Tooltip content="View">
+            <Button isIconOnly onClick={() => router.push(`/trials/${trial.id}`)} className="material-symbols-outlined">chevron_right</Button>
+          </Tooltip>
         );
       default:
         return cellValue;
@@ -255,11 +247,7 @@ function Home() {
 
   const bottomContent = React.useMemo(() => (
     <div className="py-2 px-2 flex justify-between items-center">
-      <span className="w-[30%] text-small text-default-400">
-        {selectedKeys === 'all'
-          ? 'All items selected'
-          : `${selectedKeys.size} of ${filteredItems.length} selected`}
-      </span>
+      <span className="w-[30%] text-small text-default-400" />
       <Pagination
         isCompact
         showControls
@@ -278,7 +266,7 @@ function Home() {
         </Button>
       </div>
     </div>
-  ), [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  ), [items.length, page, pages, hasSearchFilter]);
 
   return (
     <>
@@ -287,12 +275,9 @@ function Home() {
         isHeaderSticky
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
-        selectedKeys={selectedKeys}
-        selectionMode="multiple"
         sortDescriptor={sortDescriptor}
         topContent={topContent}
         topContentPlacement="outside"
-        onSelectionChange={setSelectedKeys}
         onSortChange={setSortDescriptor}
         classNames={{
           wrapper: 'grow',
@@ -318,19 +303,24 @@ function Home() {
         </TableBody>
       </Table>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Create Trial</ModalHeader>
               <ModalBody>
-                <TrialForm />
+                <TrialForm onSave={getAllTrials(user.id)} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
                   Close
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button
+                  color="primary"
+                  type="submit"
+                  form="trial-form"
+                  onPress={onClose}
+                >
                   Save
                 </Button>
               </ModalFooter>

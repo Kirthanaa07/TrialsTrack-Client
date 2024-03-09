@@ -35,6 +35,7 @@ const createTrial = (trial) => new Promise((resolve, reject) => {
     },
     body: JSON.stringify(trial),
   })
+    .then((response) => response.json())
     .then(resolve)
     .catch(reject);
 });
@@ -47,6 +48,7 @@ const updateTrial = (trial) => new Promise((resolve, reject) => {
     },
     body: JSON.stringify(trial),
   })
+    .then((response) => response.json())
     .then(resolve)
     .catch(reject);
 });
