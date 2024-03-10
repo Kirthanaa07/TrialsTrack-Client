@@ -8,7 +8,7 @@ export default function DeleteWithConfirm({ onConfirm }) {
 
   return (
     <>
-      <Button iconOnly color="danger" variant="flat" onPress={onOpen} className="material-symbols-outlined" type="delete">
+      <Button isIconOnly color="danger" variant="faded" onPress={onOpen} className="material-symbols-outlined" type="delete">
         delete
       </Button>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">

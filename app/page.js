@@ -213,10 +213,10 @@ function Home() {
               ))}
             </DropdownMenu>
           </Dropdown>
-          <TrialForm onSave={(userId) => getAllTrials(userId)} />
-          <Button color="primary" onPress={onOpenNCTModal} endContent={<span className="material-symbols-outlined">download</span>}>
+          <Button color="secondary" onPress={onOpenNCTModal} endContent={<span className="material-symbols-outlined">download</span>}>
             Import
           </Button>
+          <TrialForm onSave={(userId) => getAllTrials(userId)} />
         </div>
       </div>
       <div className="flex justify-between items-center">
@@ -320,7 +320,7 @@ function Home() {
                   form="trial-form"
                   onPress={onClose}
                 >
-                  Save
+                  Import
                 </Button>
               </ModalFooter>
             </>

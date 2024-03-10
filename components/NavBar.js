@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import {
-  Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem,
+  Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tab, Tabs,
 } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -40,9 +40,9 @@ export default function NavBar() {
         ) : <></>}
       </NavbarContent>
       <NavbarContent justify="end">
-        <div className="flex gap-2">
-          <Button iconOnly color="warning" variant="faded" className="material-symbols-outlined" onClick={() => setTheme('light')}>light_mode</Button>
-          <Button iconOnly color="secondary" variant="faded" className="material-symbols-outlined" onClick={() => setTheme('dark')}>dark_mode</Button>
+        <div className="flex gap-2 mr-8">
+          <Button isIconOnly color="warning" variant="faded" className="material-symbols-outlined" onClick={() => setTheme('light')}>light_mode</Button>
+          <Button isIconOnly color="secondary" variant="faded" className="material-symbols-outlined" onClick={() => setTheme('dark')}>dark_mode</Button>
         </div>
         <NavbarItem>
           <div className="flex flex-col">

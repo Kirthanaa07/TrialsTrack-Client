@@ -5,6 +5,7 @@ import {ThemeProvider as NextThemesProvider} from "next-themes";
 import ViewDirectorBasedOnUserAuthStatus from '../utils/ViewDirector';
 import { AuthProvider } from '../utils/context/authContext';
 import '../styles/globals.css';
+import GoogleMapScriptLoader from '../components/GoogleMapScriptLoader';
 
 export default function RootLayout({ children }) {
   return (
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
         <NextUIProvider>
           <NextThemesProvider attribute="class" defaultTheme="dark">
             <AuthProvider>
+              <GoogleMapScriptLoader />
               <ViewDirectorBasedOnUserAuthStatus className="flex grow">
                 {children}
               </ViewDirectorBasedOnUserAuthStatus>

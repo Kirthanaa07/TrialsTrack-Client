@@ -107,11 +107,9 @@ const TrialForm = ({ trialObj = initialState, onSave }) => {
   return (
     <>
       {trialObj.id ? (
-        <Button color="secondary" onPress={onOpen} endContent={<span className="material-symbols-outlined">edit</span>}>
-          Edit
-        </Button>
+        <Button isIconOnly color="success" variant="faded" onPress={onOpen} endContent={<span className="material-symbols-outlined">edit</span>} />
       ) : (
-        <Button color="secondary" onPress={onOpen} endContent={<span className="material-symbols-outlined">add</span>}>
+        <Button color="primary" onPress={onOpen} endContent={<span className="material-symbols-outlined">add</span>}>
           Add New
         </Button>
       )}
