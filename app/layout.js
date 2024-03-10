@@ -8,17 +8,17 @@ import '../styles/globals.css';
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="flex">
       <head>
         <meta charSet="UTF-8" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body>
+      <body className="flex flex-row grow">
         <NextUIProvider>
           <NextThemesProvider attribute="class" defaultTheme="dark">
             <AuthProvider>
-              <ViewDirectorBasedOnUserAuthStatus>
+              <ViewDirectorBasedOnUserAuthStatus className="flex grow">
                 {children}
               </ViewDirectorBasedOnUserAuthStatus>
             </AuthProvider>

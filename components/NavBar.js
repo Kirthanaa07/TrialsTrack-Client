@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import {
-  Button, Image, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle,
+  Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem,
 } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -16,7 +16,7 @@ export default function NavBar() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <Navbar maxWidth="full" position="static">
+    <Navbar maxWidth="full" position="sticky" className="p-4">
       <NavbarBrand className="m-3"><Image src={theme === 'dark' ? '/logo_dark_theme.png' : '/logo_light_theme.png'} className="logo" /></NavbarBrand>
       <NavbarContent justify="center">
         <NavbarItem>

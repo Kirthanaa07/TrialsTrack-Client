@@ -12,6 +12,13 @@ html {
   padding: 12px 0px;
 }
 
+[data-overlay-container=true] {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1
+}
+
+
 /* html,
 body {
   padding: 0;

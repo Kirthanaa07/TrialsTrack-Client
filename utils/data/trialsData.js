@@ -53,12 +53,13 @@ const updateTrial = (trial) => new Promise((resolve, reject) => {
     .catch(reject);
 });
 
-const getStudyTypes = () => new Promise((resolve, reject) => {
-  fetch(`${clientCredentials.databaseURL}/study_types`, {
-    method: 'GET',
+const importTrials = (nctIds) => new Promise((resolve, reject) => {
+  fetch(`${clientCredentials.databaseURL}/trials/import`, {
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: JSON.stringify(nctIds),
   })
     .then((response) => response.json())
     .then(resolve)
@@ -66,5 +67,5 @@ const getStudyTypes = () => new Promise((resolve, reject) => {
 });
 
 export {
-  getTrials, getSingleTrial, deleteTrial, updateTrial, createTrial, getStudyTypes,
+  getTrials, getSingleTrial, deleteTrial, updateTrial, createTrial, importTrials,
 };

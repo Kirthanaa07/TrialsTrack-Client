@@ -3,9 +3,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Chip, Divider } from '@nextui-org/react';
 import { router, useParams } from 'next/navigation';
-import { getSingleTrial } from '../../../utils/data/trialsData';
+import { deleteTrial, getSingleTrial } from '../../../utils/data/trialsData';
 import { deleteTrialLocation } from '../../../utils/data/trialLocationData';
 import { statusColorMap } from '../../../utils/data/lookupData';
+import DeleteWithConfirm from '../../../components/ConfirmDeleteModal';
+import TrialForm from '../../../components/forms/trialForm';
 
 function SingleTrial() {
   const [trial, setTrialDetails] = useState({
@@ -17,11 +19,12 @@ function SingleTrial() {
     getSingleTrial(trialId).then(setTrialDetails);
   };
 
+  const deleteThisTrial = () => {
+    deleteTrial(trialId).then(() => router.push('/'));
+  };
+
   const deleteThisLocation = (trialLocationId) => {
-    if (window.confirm('Delete this Location?')) {
-      deleteTrialLocation(trialLocationId);
-      getTrial();
-    }
+    deleteTrialLocation(trialLocationId).then(() => getTrial());
   };
 
   useEffect(() => {
@@ -41,26 +44,31 @@ function SingleTrial() {
           <Chip className="text-xl capitalize" color={statusColorMap[trial.overall_status] ? statusColorMap[trial.overall_status] : 'warning'} size="sm" variant="flat">
             {trial.overall_status}
           </Chip>
+          <TrialForm trialObj={trial} onSave={() => getTrial()} />
+          <DeleteWithConfirm onConfirm={() => deleteThisTrial()} />
+
+        </div>
+      </div>
+      <div>
+        <div className="flex flex-row justify-between grow">
+          <div className="text-md font-bold mb-3">LOCATIONS WITH STATUS</div>
           <Button color="primary" endContent={<span className="material-symbols-outlined">add</span>} type="payment" onClick={addLocation}>
             Add Location
           </Button>
         </div>
-      </div>
-      <div>
-        <div className="text-md font-bold mb-3">LOCATIONS WITH STATUS</div>
         <Divider />
         <div className="flex flex-col gap-3 grow">
           {trial.locations && trial.locations.length > 0 ? trial.locations.map((trialLocation) => (
             <div key={trialLocation.id}>
               <div className="flex flex-row gap-6 text-lg items-center" >
                 <div className="flex gap-3">{trialLocation.location.name}
-                  <Chip className="text-lg capitalize" color={statusColorMap[trialLocation.status] ? statusColorMap[trialLocation.status] : 'warning'} size="sm" variant="flat">
-                    {trialLocation.status}
-                  </Chip>
+                  {trialLocation.status ? (
+                    <Chip className="text-lg capitalize" color={statusColorMap[trialLocation.status] ? statusColorMap[trialLocation.status] : 'warning'} size="sm" variant="flat">
+                      {trialLocation.status}
+                    </Chip>
+                  ) : <></>}
                 </div>
-                <Button iconOnly color="danger" variant="flat" className="material-symbols-outlined m-3" type="delete" onClick={() => deleteThisLocation(trialLocation.id)}>
-                  delete
-                </Button>
+                <DeleteWithConfirm onConfirm={() => deleteThisLocation(trialLocation.id)} />
               </div>
               <Divider />
             </div>
@@ -70,6 +78,10 @@ function SingleTrial() {
       <div>
         <div className="text-md font-bold">TITLE</div>
         <div>{trial.title}</div>
+      </div>
+      <div>
+        <div className="text-md font-bold">STUDY TYPE</div>
+        <div>{trial.study_type}</div>
       </div>
       <div>
         <div className="text-md font-bold">BRIEF TITLE</div>

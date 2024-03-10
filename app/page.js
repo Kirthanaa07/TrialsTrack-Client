@@ -30,6 +30,7 @@ import { useAuth } from '../utils/context/authContext';
 import { capitalize } from '../utils/utils';
 import TrialForm from '../components/forms/trialForm';
 import { statusColorMap, statusOptions, trialColumns } from '../utils/data/lookupData';
+import NCTImportForm from '../components/forms/nctImportForm';
 
 function Home() {
   const INITIAL_VISIBLE_COLUMNS = ['nct_id', 'title', 'overall_status', 'study_type', 'phase', 'brief_summary', 'actions'];
@@ -39,15 +40,15 @@ function Home() {
   const [statusFilter, setStatusFilter] = React.useState('all');
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: 'age',
-    direction: 'ascending',
+    column: 'nct_id',
+    direction: 'descending',
   });
   const [page, setPage] = React.useState(1);
 
   const router = useRouter();
   const { user } = useAuth();
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen: isOpenNCTModal, onOpen: onOpenNCTModal, onOpenChange: onOpenChangeNCTModal } = useDisclosure();
   function getAllTrials(userId) {
     getTrials(userId).then(setTrials);
   }
@@ -212,10 +213,8 @@ function Home() {
               ))}
             </DropdownMenu>
           </Dropdown>
-          <Button color="secondary" onPress={onOpen} endContent={<span className="material-symbols-outlined">add</span>}>
-            Add New
-          </Button>
-          <Button color="primary" onPress={onOpen} endContent={<span className="material-symbols-outlined">download</span>}>
+          <TrialForm onSave={(userId) => getAllTrials(userId)} />
+          <Button color="primary" onPress={onOpenNCTModal} endContent={<span className="material-symbols-outlined">download</span>}>
             Import
           </Button>
         </div>
@@ -269,7 +268,7 @@ function Home() {
   ), [items.length, page, pages, hasSearchFilter]);
 
   return (
-    <>
+    <div className="p-4 pt-8 flex grow">
       <Table
         aria-label="My Clinical Trials"
         isHeaderSticky
@@ -303,13 +302,13 @@ function Home() {
         </TableBody>
       </Table>
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
+      <Modal isOpen={isOpenNCTModal} onOpenChange={onOpenChangeNCTModal} size="3xl">
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Create Trial</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Import Trial</ModalHeader>
               <ModalBody>
-                <TrialForm onSave={getAllTrials(user.id)} />
+                <NCTImportForm onSave={(userId) => getAllTrials(userId)} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
@@ -328,7 +327,7 @@ function Home() {
           )}
         </ModalContent>
       </Modal>
-    </>
+    </div>
   );
 }
 
