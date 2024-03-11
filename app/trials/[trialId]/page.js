@@ -3,24 +3,25 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Chip, Divider } from '@nextui-org/react';
 import { useParams, useRouter } from 'next/navigation';
-import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import { deleteTrial, getSingleTrial } from '../../../utils/data/trialsData';
 import { deleteTrialLocation } from '../../../utils/data/trialLocationData';
 import { statusColorMap } from '../../../utils/data/lookupData';
 import DeleteWithConfirm from '../../../components/ConfirmDeleteModal';
 import TrialForm from '../../../components/forms/trialForm';
-import AddLocationForm from '../../../components/forms/addLocationForm';
+import TrialLocationForm from '../../../components/forms/trialLocationForm';
+import { useAuth } from '../../../utils/context/authContext';
 
 function SingleTrial() {
   const [trial, setTrialDetails] = useState({
     locations: {},
   });
-  const [locationIds, setLocationIds] = useState([]);
-  const [coordinates, setCoordinates] = useState({ lat: 10, lng: 10 });
+
+  const [coordinates, setCoordinates] = useState({ lat: 0, lng: 0 });
   const { trialId } = useParams();
   const router = useRouter();
+  const { user } = useAuth();
 
-  const libraries = useMemo(() => ['places'], []);
   let mapCenter = useMemo(
     () => ({ lat: 0, lng: 0 }),
     [],
@@ -34,17 +35,8 @@ function SingleTrial() {
     [],
   );
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY,
-    libraries: libraries,
-  });
-
   const getTrial = () => {
-    getSingleTrial(trialId).then((data) => {
-      const locIds = data.locations.map((loc) => loc.location.id);
-      setTrialDetails(data);
-      setLocationIds(locIds);
-    });
+    getSingleTrial(trialId).then(setTrialDetails);
   };
 
   const deleteThisTrial = () => {
@@ -74,19 +66,17 @@ function SingleTrial() {
         <div className="text-3xl font-bold">{trial.nct_id}</div>
         <div className="flex gap-2 items-center">
           <div>OVERALL STATUS</div>
-          <Chip className="text-lg capitalize mr-8" color={statusColorMap[trial.overall_status] ? statusColorMap[trial.overall_status] : 'warning'} size="sm" variant="flat">
+          <Chip className="text-lg capitalize" color={statusColorMap[trial.overall_status] ? statusColorMap[trial.overall_status] : 'warning'} size="sm" variant="flat">
             {trial.overall_status}
           </Chip>
-          <TrialForm trialObj={trial} onSave={getTrial} />
-          <DeleteWithConfirm onConfirm={deleteThisTrial} />
+          {trial.id && user.role === 'Admin' ? <div className="ml-8"><TrialForm trialObj={trial} onSave={getTrial} /></div> : <></>}
+          {user.role === 'Admin' ? <DeleteWithConfirm onConfirm={deleteThisTrial} /> : <></>}
         </div>
       </div>
       <div>
         <div className="flex flex-row justify-between grow items-center mb-4">
           <div className="text-md font-bold">LOCATIONS WITH STATUS</div>
-          {trial.locations && trial.locations.length > 0 ? (
-            <AddLocationForm excludeLocationIds={locationIds} onSave={getTrial} />
-          ) : <></>}
+          {user.role === 'Admin' ? <TrialLocationForm onSave={getTrial} /> : <></>}
         </div>
         <Divider />
         {/* https://www.99darshan.com/posts/interactive-maps-using-nextjs-and-google-maps */}
@@ -99,25 +89,29 @@ function SingleTrial() {
                     <div className="flex flex-col">
                       <span>{trialLocation.location.name}</span>
                       <span className="italic text-sm">{trialLocation.location.address} {trialLocation.location.state} {trialLocation.location.zip}</span>
+                      <div className="italic text-sm">{trialLocation.contact_name}</div>
+                      {trialLocation.contact_phone ? <div className="italic text-sm flex gap-2"><span className="material-symbols-outlined text-sm">phone</span>{trialLocation.contact_phone}</div> : <></>}
+                      {trialLocation.contact_email ? <div className="italic text-sm flex gap-2"><span className="material-symbols-outlined text-sm">email</span>{trialLocation.contact_email}</div> : <></>}
                     </div>
                   </div>
-                  <div className="flex gap-6 items-center mr-4">
+                  <div className="flex gap-4 items-center mr-3">
                     <span className="mr-4">{trialLocation.status ? (
                       <Chip className="text-lg capitalize" color={statusColorMap[trialLocation.status] ? statusColorMap[trialLocation.status] : 'warning'} size="sm" variant="flat">
                         {trialLocation.status}
                       </Chip>
                     ) : <></>}
                     </span>
-                    <Button color="primary" onClick={() => router.push(`/trial-locations/${trialLocation.id}/patients`)} endContent={<span className="material-symbols-outlined">visibility</span>}>Patients</Button>
+                    {user.role === 'Admin' || (user.location_id && user.location_id === trialLocation.location.id) ? <Button color="primary" onClick={() => router.push(`/trial-locations/${trialLocation.id}/patients`)} endContent={<span className="material-symbols-outlined">visibility</span>}>Patients</Button> : <></>}
                     <Button
                       isIconOnly
-                      color="success"
+                      color="secondary"
                       variant="faded"
                       onClick={() => changeGoogleMapCoordinates(trialLocation.location)}
                     >
                       <span className="material-symbols-outlined">pin_drop</span>
                     </Button>
-                    <DeleteWithConfirm onConfirm={() => deleteThisLocation(trialLocation.id)} />
+                    {user.role === 'Admin' || (user.location_id && user.location_id === trialLocation.location.id) ? <TrialLocationForm existingTrialLocation={trialLocation} onSave={getTrial} /> : <></>}
+                    {user.role === 'Admin' ? <DeleteWithConfirm onConfirm={() => deleteThisLocation(trialLocation.id)} /> : <></>}
                   </div>
                 </div>
 
@@ -131,7 +125,7 @@ function SingleTrial() {
               zoom={14}
               center={coordinates}
               mapTypeId={google.maps.MapTypeId.ROADMAP}
-              mapContainerStyle={{ width: '60rem', height: '24rem' }}
+              mapContainerStyle={{ width: '50rem', height: '24rem' }}
             >
               <MarkerF position={coordinates} />
             </GoogleMap>

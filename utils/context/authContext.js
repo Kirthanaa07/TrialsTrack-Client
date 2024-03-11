@@ -9,8 +9,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { checkUser } from '../auth';
 import { firebase } from '../client';
+import { checkUser } from '../data/userData';
 
 const AuthContext = createContext();
 
@@ -36,13 +36,8 @@ const AuthProvider = (props) => {
     firebase.auth().onAuthStateChanged((fbUser) => {
       if (fbUser) {
         setOAuthUser(fbUser);
-        checkUser(fbUser.uid).then((userInfo) => {
-          let userObj = {};
-          if ('null' in userInfo) {
-            userObj = userInfo;
-          } else {
-            userObj = { fbUser, uid: fbUser.uid, ...userInfo };
-          }
+        checkUser(fbUser.uid, fbUser.displayName, fbUser.email).then((userInfo) => {
+          const userObj = { fbUser, uid: fbUser.uid, ...userInfo };
           setUser(userObj);
         });
       } else {

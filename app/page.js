@@ -23,7 +23,6 @@ import {
   ModalHeader,
   ModalContent,
   Modal,
-  Tooltip,
 } from '@nextui-org/react';
 import { getTrials } from '../utils/data/trialsData';
 import { useAuth } from '../utils/context/authContext';
@@ -49,18 +48,18 @@ function Home() {
   const { user } = useAuth();
 
   const { isOpen: isOpenNCTModal, onOpen: onOpenNCTModal, onOpenChange: onOpenChangeNCTModal } = useDisclosure();
-  function getAllTrials(userId) {
-    getTrials(userId).then(setTrials);
+  function getAllTrials() {
+    getTrials(user.location_id).then(setTrials);
   }
   React.useEffect(() => {
-    getAllTrials(user.id);
+    getAllTrials();
   }, [user.id]);
 
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === 'all') return trialColumns;
-    return trialColumns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+    return trialColumns.filter((column) => Array.from(visibleColumns).includes(column.id));
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
@@ -118,9 +117,7 @@ function Home() {
 
       case 'actions':
         return (
-          <Tooltip content="View">
-            <Button isIconOnly onClick={() => router.push(`/trials/${trial.id}`)} className="material-symbols-outlined">chevron_right</Button>
-          </Tooltip>
+          <Button isIconOnly onClick={() => router.push(`/trials/${trial.id}`)} className="material-symbols-outlined">chevron_right</Button>
         );
       default:
         return cellValue;
@@ -186,7 +183,7 @@ function Home() {
               onSelectionChange={setStatusFilter}
             >
               {statusOptions.map((status) => (
-                <DropdownItem key={status.uid} className="capitalize">
+                <DropdownItem key={status.id} className="capitalize">
                   {capitalize(status.name)}
                 </DropdownItem>
               ))}
@@ -207,16 +204,20 @@ function Home() {
               onSelectionChange={setVisibleColumns}
             >
               {trialColumns.map((column) => (
-                <DropdownItem key={column.uid} className="capitalize">
+                <DropdownItem key={column.id} className="capitalize">
                   {capitalize(column.name)}
                 </DropdownItem>
               ))}
             </DropdownMenu>
           </Dropdown>
-          <Button color="secondary" onPress={onOpenNCTModal} endContent={<span className="material-symbols-outlined">download</span>}>
-            Import
-          </Button>
-          <TrialForm onSave={(userId) => getAllTrials(userId)} />
+          {user.role === 'Admin' ? (
+            <>
+              <Button color="secondary" onPress={onOpenNCTModal} endContent={<span className="material-symbols-outlined">download</span>}>
+                Import
+              </Button>
+              <TrialForm onSave={() => getAllTrials()} />
+            </>
+          ) : <></>}
         </div>
       </div>
       <div className="flex justify-between items-center">
@@ -285,8 +286,8 @@ function Home() {
         <TableHeader columns={headerColumns}>
           {(column) => (
             <TableColumn
-              key={column.uid}
-              align={column.uid === 'actions' ? 'center' : 'start'}
+              key={column.id}
+              align={column.id === 'actions' ? 'center' : 'start'}
               allowsSorting={column.sortable}
             >
               {column.name}
@@ -308,7 +309,7 @@ function Home() {
             <>
               <ModalHeader className="flex flex-col gap-1">Import Trial</ModalHeader>
               <ModalBody>
-                <NCTImportForm onSave={(userId) => getAllTrials(userId)} />
+                <NCTImportForm onSave={() => getAllTrials()} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

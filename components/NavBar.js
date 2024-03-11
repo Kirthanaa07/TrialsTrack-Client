@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import {
-  Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem, Tab, Tabs,
+  Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem,
 } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
@@ -24,19 +24,17 @@ export default function NavBar() {
             Trials
           </Button>
         </NavbarItem>
+        <NavbarItem>
+          <Button onClick={() => router.push('/users')}>
+            Users (Researchers + Patients)
+          </Button>
+        </NavbarItem>
         {user.role === 'Admin' ? (
-          <>
-            <NavbarItem>
-              <Button onClick={() => router.push('/locations')}>
-                Locations
-              </Button>
-            </NavbarItem>
-            <NavbarItem>
-              <Button onClick={() => router.push('/users')}>
-                Users
-              </Button>
-            </NavbarItem>
-          </>
+          <NavbarItem>
+            <Button onClick={() => router.push('/locations')}>
+              Locations
+            </Button>
+          </NavbarItem>
         ) : <></>}
       </NavbarContent>
       <NavbarContent justify="end">
@@ -50,7 +48,15 @@ export default function NavBar() {
             <span className="italic">{user.role}</span>
           </div>
         </NavbarItem>
-        <Button color="danger" variant="bordered" className="font-bold" onClick={signOut}>
+        <Button
+          color="danger"
+          variant="bordered"
+          className="font-bold"
+          onClick={() => {
+            router.push('/');
+            signOut();
+          }}
+        >
           Sign Out
         </Button>
       </NavbarContent>
