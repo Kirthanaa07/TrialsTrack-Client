@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
 import {
   Table,
   TableHeader,
@@ -17,63 +16,60 @@ import {
   DropdownItem,
   Chip,
   Pagination,
-  useDisclosure,
-  ModalFooter,
-  ModalBody,
-  ModalHeader,
-  ModalContent,
-  Modal,
 } from '@nextui-org/react';
-import { getTrials } from '../utils/data/trialsData';
-import { useAuth } from '../utils/context/authContext';
-import { capitalize } from '../utils/utils';
-import TrialForm from '../components/forms/trialForm';
-import { statusColorMap, statusOptions, trialColumns } from '../utils/data/lookupData';
-import NCTImportForm from '../components/forms/nctImportForm';
+import { useAuth } from '../../utils/context/authContext';
+import { deleteUser, getUsers } from '../../utils/data/userData';
+import { capitalize } from '../../utils/utils';
+import { roleOptions, userColumns, userRoleColorMap } from '../../utils/data/lookupData';
+import UserForm from '../../components/forms/userForm';
+import DeleteWithConfirm from '../../components/ConfirmDeleteModal';
 
-function Home() {
-  const INITIAL_VISIBLE_COLUMNS = ['nct_id', 'title', 'overall_status', 'study_type', 'phase', 'brief_summary', 'actions'];
-  const [trials, setTrials] = React.useState([]);
+function Users() {
+  const INITIAL_VISIBLE_COLUMNS = ['name', 'email', 'role', 'location', 'department', 'age', 'gender', 'dob', 'actions'];
+  const [users, setUsers] = React.useState([]);
   const [filterValue, setFilterValue] = React.useState('');
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
-  const [statusFilter, setStatusFilter] = React.useState('all');
+  const [roleFilter, setStatusFilter] = React.useState('all');
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: 'nct_id',
-    direction: 'descending',
+    column: 'name',
+    direction: 'ascending',
   });
   const [page, setPage] = React.useState(1);
-
-  const router = useRouter();
   const { user } = useAuth();
 
-  const { isOpen: isOpenNCTModal, onOpen: onOpenNCTModal, onOpenChange: onOpenChangeNCTModal } = useDisclosure();
-  function getAllTrials() {
-    getTrials(user.location_id).then(setTrials);
+  function getAllUsers() {
+    getUsers().then(setUsers);
   }
+
+  function deleteThisUser(userId) {
+    deleteUser(userId).then(() => getAllUsers());
+  }
+
   React.useEffect(() => {
-    getAllTrials();
+    getAllUsers();
   }, [user.id]);
 
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
-    if (visibleColumns === 'all') return trialColumns;
-    return trialColumns.filter((column) => Array.from(visibleColumns).includes(column.id));
+    if (visibleColumns === 'all') return userColumns;
+    return userColumns.filter((column) => Array.from(visibleColumns).includes(column.id));
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredTrials = [...trials];
+    let filteredUsers = [...users];
     if (hasSearchFilter) {
-      filteredTrials = filteredTrials.filter((u) => u.title.toLowerCase().includes(filterValue.toLowerCase())
-        || u.nct_id.toLowerCase().includes(filterValue.toLowerCase())
-        || u.brief_summary.toLowerCase().includes(filterValue.toLowerCase()));
+      filteredUsers = filteredUsers.filter((dbUser) => dbUser.name.toLowerCase().includes(filterValue.toLowerCase())
+        || dbUser.email.toLowerCase().includes(filterValue.toLowerCase())
+        || dbUser.role.toLowerCase().includes(filterValue.toLowerCase())
+        || dbUser.uid.toLowerCase().includes(filterValue.toLowerCase()));
     }
-    if (statusFilter !== 'all' && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredTrials = filteredTrials.filter((trial) => Array.from(statusFilter).includes(trial.overall_status.toLowerCase()));
+    if (roleFilter !== 'all' && Array.from(roleFilter).length !== roleOptions.length) {
+      filteredUsers = filteredUsers.filter((dbUser) => Array.from(roleFilter).includes(dbUser.role.toLowerCase()));
     }
-    return filteredTrials;
-  }, [trials, filterValue, statusFilter]);
+    return filteredUsers;
+  }, [users, filterValue, roleFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -95,29 +91,44 @@ function Home() {
     return sortDescriptor.direction === 'descending' ? -cmp : cmp;
   }), [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((trial, columnKey) => {
-    const cellValue = trial[columnKey];
+  const renderCell = React.useCallback((dbUser, columnKey) => {
+    const cellValue = dbUser[columnKey];
     let color = 'warning';
     switch (columnKey) {
-      case 'nct_id':
-      case 'title':
-      case 'study_type':
-      case 'phase':
-      case 'brief_summary':
+      case 'name':
+      case 'email':
+      case 'uid':
         return (
-          <p className="text-bold text-small capitalize">{cellValue}</p>
+          <p className="text-bold text-small">{cellValue}</p>
         );
-      case 'overall_status':
-        color = statusColorMap[trial.overall_status] ? statusColorMap[trial.overall_status] : 'warning';
+      case 'location':
+        return <div>{dbUser.researcher?.location.name}</div>;
+      case 'department':
+        return <div>{dbUser.researcher?.department}</div>;
+      case 'age':
+        return <div>{dbUser.patient?.age}</div>;
+      case 'gender':
+        return <div>{dbUser.patient?.gender}</div>;
+      case 'dob':
+        return <div>{dbUser.patient?.dob}</div>;
+      case 'role':
+        color = userRoleColorMap[dbUser.role] ? userRoleColorMap[dbUser.role] : 'warning';
         return (
           <Chip className="capitalize" color={color} size="sm" variant="flat">
             {cellValue}
           </Chip>
         );
-
       case 'actions':
         return (
-          <Button isIconOnly onClick={() => router.push(`/trials/${trial.id}`)} className="material-symbols-outlined">chevron_right</Button>
+          <>
+            {user.id === dbUser.id ? <div>Unable to modify your own user account</div> : <></>}
+            {user.role === 'Admin' || (user.role === 'Researcher' && dbUser.role === 'Patient') ? (
+              <div className="relative flex justify-end items-center gap-2">
+                <UserForm existingUser={dbUser} onSave={() => getAllUsers()} />
+                <DeleteWithConfirm onConfirm={() => deleteThisUser(dbUser.id)} />
+              </div>
+            ) : <></>}
+          </>
         );
       default:
         return cellValue;
@@ -171,20 +182,20 @@ function Home() {
           <Dropdown>
             <DropdownTrigger className="hidden sm:flex">
               <Button endContent={<span className="material-symbols-outlined">expand_more</span>} variant="flat">
-                Status
+                Role
               </Button>
             </DropdownTrigger>
             <DropdownMenu
               disallowEmptySelection
               aria-label="Table Columns"
               closeOnSelect={false}
-              selectedKeys={statusFilter}
+              selectedKeys={roleFilter}
               selectionMode="multiple"
               onSelectionChange={setStatusFilter}
             >
-              {statusOptions.map((status) => (
-                <DropdownItem key={status.id} className="capitalize">
-                  {capitalize(status.name)}
+              {roleOptions.map((role) => (
+                <DropdownItem key={role.id} className="capitalize">
+                  {capitalize(role.name)}
                 </DropdownItem>
               ))}
             </DropdownMenu>
@@ -203,25 +214,18 @@ function Home() {
               selectionMode="multiple"
               onSelectionChange={setVisibleColumns}
             >
-              {trialColumns.map((column) => (
+              {userColumns.map((column) => (
                 <DropdownItem key={column.id} className="capitalize">
                   {capitalize(column.name)}
                 </DropdownItem>
               ))}
             </DropdownMenu>
           </Dropdown>
-          {user.role === 'Admin' ? (
-            <>
-              <Button color="secondary" onPress={onOpenNCTModal} endContent={<span className="material-symbols-outlined">download</span>}>
-                Import
-              </Button>
-              <TrialForm onSave={() => getAllTrials()} />
-            </>
-          ) : <></>}
+          <UserForm onSave={() => getAllUsers()} />
         </div>
       </div>
       <div className="flex justify-between items-center">
-        <span className="text-default-400 text-small">Total {trials.length} trials</span>
+        <span className="text-default-400 text-small">Total {users.length} users</span>
         <label className="flex items-center text-default-400 text-small">
           Rows per page:
           <select
@@ -237,10 +241,10 @@ function Home() {
     </div>
   ), [
     filterValue,
-    statusFilter,
+    roleFilter,
     visibleColumns,
     onRowsPerPageChange,
-    trials.length,
+    users.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -268,10 +272,10 @@ function Home() {
     </div>
   ), [items.length, page, pages, hasSearchFilter]);
 
-  return (
+  return user.role === 'Admin' || user.role === 'Researcher' ? (
     <div className="p-4 pt-8 flex grow">
       <Table
-        aria-label="My Clinical Trials"
+        aria-label="Users"
         isHeaderSticky
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
@@ -294,7 +298,7 @@ function Home() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent="No trials found" items={sortedItems}>
+        <TableBody emptyContent="No users found" items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
@@ -303,33 +307,8 @@ function Home() {
         </TableBody>
       </Table>
 
-      <Modal isOpen={isOpenNCTModal} onOpenChange={onOpenChangeNCTModal} size="3xl">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Import Trial</ModalHeader>
-              <ModalBody>
-                <NCTImportForm onSave={() => getAllTrials()} />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button
-                  color="primary"
-                  type="submit"
-                  form="trial-form"
-                  onPress={onClose}
-                >
-                  Import
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </div>
-  );
+  ) : <div className="flex h-full justify-center items-center">You do not have access to view this page</div>;
 }
 
-export default Home;
+export default Users;

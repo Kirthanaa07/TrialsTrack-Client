@@ -24,7 +24,7 @@ const initialState = {
   imported_date: '',
 };
 
-const TrialForm = ({ trialObj = initialState, onSave }) => {
+const PatientForm = ({ trialObj = initialState, onSave }) => {
   const [formTrialData, setFormTrialData] = useState(initialState);
 
   const router = useRouter();
@@ -187,7 +187,7 @@ const TrialForm = ({ trialObj = initialState, onSave }) => {
   );
 };
 
-TrialForm.propTypes = {
+PatientForm.propTypes = {
   trialObj: PropTypes.shape({
     id: PropTypes.number,
     nct_id: PropTypes.string,
@@ -206,4 +206,4 @@ TrialForm.propTypes = {
   }),
 };
 
-export default TrialForm;
+export default PatientForm;

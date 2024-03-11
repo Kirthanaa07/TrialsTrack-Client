@@ -21,21 +21,24 @@ function Home() {
   }, []);
 
   return (
-    <article className="orders p-3">
-      <Button
-        onClick={() => {
-          router.push('/locations/new');
-        }}
-      >
-        Create New Location
-      </Button>
-      <h1>Locations</h1>
-      <div className="d-flex flex-row justify-content-start gap-2 flex-wrap">
-        {locations.map((location) => (
-          <LocationCard key={`location--${location.id}`} locationObj={location} onUpdate={getAllLocations} />
-        ))}
-      </div>
-    </article>
+    <>
+      <div>Locations</div>
+    </>
+    // <article className="orders p-3">
+    //   <Button
+    //     onClick={() => {
+    //       router.push('/locations/new');
+    //     }}
+    //   >
+    //     Create New Location
+    //   </Button>
+    //   <h1>Locations</h1>
+    //   <div className="d-flex flex-row justify-content-start gap-2 flex-wrap">
+    //     {locations.map((location) => (
+    //       <LocationCard key={`location--${location.id}`} locationObj={location} onUpdate={getAllLocations} />
+    //     ))}
+    //   </div>
+    // </article>
   );
 }
 

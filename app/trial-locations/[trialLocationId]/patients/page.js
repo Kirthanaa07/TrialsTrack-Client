@@ -17,23 +17,17 @@ import {
   DropdownItem,
   Chip,
   Pagination,
-  useDisclosure,
-  ModalFooter,
-  ModalBody,
-  ModalHeader,
-  ModalContent,
-  Modal,
 } from '@nextui-org/react';
-import { getTrials } from '../utils/data/trialsData';
-import { useAuth } from '../utils/context/authContext';
-import { capitalize } from '../utils/utils';
-import TrialForm from '../components/forms/trialForm';
-import { statusColorMap, statusOptions, trialColumns } from '../utils/data/lookupData';
-import NCTImportForm from '../components/forms/nctImportForm';
+import { useAuth } from '../../../../utils/context/authContext';
+import PatientForm from '../../../../components/forms/patientForm';
+import { deleteTrialLocationPatient, getTrialLocationPatients } from '../../../../utils/data/trialLocationPatientData';
+import { patientColumns, patientStatusColorMap, patientStatusOptions } from '../../../../utils/data/lookupData';
+import { capitalize } from '../../../../utils/utils';
+import DeleteWithConfirm from '../../../../components/ConfirmDeleteModal';
 
-function Home() {
-  const INITIAL_VISIBLE_COLUMNS = ['nct_id', 'title', 'overall_status', 'study_type', 'phase', 'brief_summary', 'actions'];
-  const [trials, setTrials] = React.useState([]);
+function Patients() {
+  const INITIAL_VISIBLE_COLUMNS = ['name', 'location', 'status', 'email', 'age', 'gender', 'dob', 'actions'];
+  const [trialLocationPatients, setTrialLocationPatients] = React.useState([]);
   const [filterValue, setFilterValue] = React.useState('');
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState('all');
@@ -44,36 +38,39 @@ function Home() {
   });
   const [page, setPage] = React.useState(1);
 
-  const router = useRouter();
   const { user } = useAuth();
 
-  const { isOpen: isOpenNCTModal, onOpen: onOpenNCTModal, onOpenChange: onOpenChangeNCTModal } = useDisclosure();
-  function getAllTrials() {
-    getTrials(user.location_id).then(setTrials);
+  function getAllTrialPatients() {
+    getTrialLocationPatients(user.location_id).then(setTrialLocationPatients);
   }
+
+  function deleteThisTrialLocationPatient(id) {
+    deleteTrialLocationPatient(id).then(() => getAllTrialPatients());
+  }
+
   React.useEffect(() => {
-    getAllTrials();
+    getAllTrialPatients();
   }, [user.id]);
 
   const hasSearchFilter = Boolean(filterValue);
 
   const headerColumns = React.useMemo(() => {
-    if (visibleColumns === 'all') return trialColumns;
-    return trialColumns.filter((column) => Array.from(visibleColumns).includes(column.id));
+    if (visibleColumns === 'all') return patientColumns;
+    return patientColumns.filter((column) => Array.from(visibleColumns).includes(column.id));
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredTrials = [...trials];
+    let filteredTrialLocationPatients = [...trialLocationPatients];
     if (hasSearchFilter) {
-      filteredTrials = filteredTrials.filter((u) => u.title.toLowerCase().includes(filterValue.toLowerCase())
+      filteredTrialLocationPatients = filteredTrialLocationPatients.filter((u) => u.title.toLowerCase().includes(filterValue.toLowerCase())
         || u.nct_id.toLowerCase().includes(filterValue.toLowerCase())
         || u.brief_summary.toLowerCase().includes(filterValue.toLowerCase()));
     }
-    if (statusFilter !== 'all' && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredTrials = filteredTrials.filter((trial) => Array.from(statusFilter).includes(trial.overall_status.toLowerCase()));
+    if (statusFilter !== 'all' && Array.from(statusFilter).length !== patientStatusOptions.length) {
+      filteredTrialLocationPatients = filteredTrialLocationPatients.filter((trialLocationPatient) => Array.from(statusFilter).includes(trialLocationPatient.status.toLowerCase()));
     }
-    return filteredTrials;
-  }, [trials, filterValue, statusFilter]);
+    return filteredTrialLocationPatients;
+  }, [trialLocationPatients, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -95,32 +92,42 @@ function Home() {
     return sortDescriptor.direction === 'descending' ? -cmp : cmp;
   }), [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((trial, columnKey) => {
-    const cellValue = trial[columnKey];
+  const renderCell = React.useCallback((trialLocationPatient, columnKey) => {
     let color = 'warning';
     switch (columnKey) {
-      case 'nct_id':
-      case 'title':
-      case 'study_type':
-      case 'phase':
-      case 'brief_summary':
-        return (
-          <p className="text-bold text-small capitalize">{cellValue}</p>
-        );
-      case 'overall_status':
-        color = statusColorMap[trial.overall_status] ? statusColorMap[trial.overall_status] : 'warning';
+      case 'name':
+        return <p className="text-bold text-small capitalize">{trialLocationPatient.patient.user.name}</p>;
+      case 'email':
+        return <p className="text-bold text-small capitalize">{trialLocationPatient.patient.user.email}</p>;
+      case 'age':
+        return <p className="text-bold text-small capitalize">{trialLocationPatient.patient.age}</p>;
+      case 'gender':
+        return <p className="text-bold text-small capitalize">{trialLocationPatient.patient.gender}</p>;
+      case 'dob':
+        return <p className="text-bold text-small capitalize">{trialLocationPatient.patient.dob}</p>;
+      case 'location':
+        return <p className="text-bold text-small capitalize">{trialLocationPatient.trial_location.location.name}</p>;
+      case 'status':
+        color = patientStatusColorMap[trialLocationPatient.status] ? patientStatusColorMap[trialLocationPatient.status] : 'warning';
         return (
           <Chip className="capitalize" color={color} size="sm" variant="flat">
-            {cellValue}
+            {trialLocationPatient.status}
           </Chip>
         );
 
       case 'actions':
         return (
-          <Button isIconOnly onClick={() => router.push(`/trials/${trial.id}`)} className="material-symbols-outlined">chevron_right</Button>
+          <>
+            {user.role === 'Admin' || user.role === 'Researcher' ? (
+              <div className="relative flex justify-end items-center gap-2">
+                <PatientForm existingPatient={trialLocationPatient} onSave={() => getAllTrialPatients()} />
+                <DeleteWithConfirm onConfirm={() => deleteThisTrialLocationPatient(trialLocationPatient.id)} />
+              </div>
+            ) : <></>}
+          </>
         );
       default:
-        return cellValue;
+        return <p>N/A</p>;
     }
   }, []);
 
@@ -182,7 +189,7 @@ function Home() {
               selectionMode="multiple"
               onSelectionChange={setStatusFilter}
             >
-              {statusOptions.map((status) => (
+              {patientStatusOptions.map((status) => (
                 <DropdownItem key={status.id} className="capitalize">
                   {capitalize(status.name)}
                 </DropdownItem>
@@ -203,25 +210,20 @@ function Home() {
               selectionMode="multiple"
               onSelectionChange={setVisibleColumns}
             >
-              {trialColumns.map((column) => (
+              {patientColumns.map((column) => (
                 <DropdownItem key={column.id} className="capitalize">
                   {capitalize(column.name)}
                 </DropdownItem>
               ))}
             </DropdownMenu>
           </Dropdown>
-          {user.role === 'Admin' ? (
-            <>
-              <Button color="secondary" onPress={onOpenNCTModal} endContent={<span className="material-symbols-outlined">download</span>}>
-                Import
-              </Button>
-              <TrialForm onSave={() => getAllTrials()} />
-            </>
+          {user.role === 'Admin' || user.role === 'Researcher' ? (
+            <PatientForm onSave={() => getAllTrialPatients()} />
           ) : <></>}
         </div>
       </div>
       <div className="flex justify-between items-center">
-        <span className="text-default-400 text-small">Total {trials.length} trials</span>
+        <span className="text-default-400 text-small">Total {trialLocationPatients.length} trials</span>
         <label className="flex items-center text-default-400 text-small">
           Rows per page:
           <select
@@ -240,7 +242,7 @@ function Home() {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    trials.length,
+    trialLocationPatients.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -271,7 +273,7 @@ function Home() {
   return (
     <div className="p-4 pt-8 flex grow">
       <Table
-        aria-label="My Clinical Trials"
+        aria-label="Patients"
         isHeaderSticky
         bottomContent={bottomContent}
         bottomContentPlacement="outside"
@@ -294,7 +296,7 @@ function Home() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent="No trials found" items={sortedItems}>
+        <TableBody emptyContent="No patients found" items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
@@ -302,34 +304,8 @@ function Home() {
           )}
         </TableBody>
       </Table>
-
-      <Modal isOpen={isOpenNCTModal} onOpenChange={onOpenChangeNCTModal} size="3xl">
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Import Trial</ModalHeader>
-              <ModalBody>
-                <NCTImportForm onSave={() => getAllTrials()} />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button
-                  color="primary"
-                  type="submit"
-                  form="trial-form"
-                  onPress={onClose}
-                >
-                  Import
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </div>
   );
 }
 
-export default Home;
+export default Patients;
