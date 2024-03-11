@@ -1,7 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@nextui-org/react';
+import {
+  Button, Card, CardBody, CardHeader, Image,
+} from '@nextui-org/react';
 import { signIn } from '../utils/auth';
 
 function Signin() {
@@ -19,7 +21,25 @@ function Signin() {
         paddingBlock: '0 5rem',
       }}
     >
-      <Button type="button" size="lg" className="copy-btn" onClick={signIn}>
+      <Card className="min-w-xl self-stretch">
+        <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+          <Image
+            alt="BackEnd capstone"
+            className="object-cover rounded-xl"
+            src="/logo_dark_theme.png"
+            width={900}
+          />
+        </CardHeader>
+        <CardBody className="overflow-visible py-2">
+          <Image
+            alt="BackEnd capstone"
+            className="object-cover rounded-xl"
+            src="/trialsTrack.jpg"
+            width={900}
+          />
+        </CardBody>
+      </Card>
+      <Button type="button" size="lg" className=" bg-[#779ed4]" onClick={signIn}>
         Sign In
       </Button>
     </div>
