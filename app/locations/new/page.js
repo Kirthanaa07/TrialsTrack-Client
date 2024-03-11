@@ -1,4 +1,6 @@
-import LocationForm from '../../components/forms/locationForm';
+'use client';
+
+import LocationForm from '../../../components/forms/locationForm';
 
 const NewLocation = () => (
   <div className="p-3">

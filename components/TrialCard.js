@@ -1,7 +1,11 @@
+'use client';
+
 import PropTypes from 'prop-types';
 import React from 'react';
-import { useRouter } from 'next/router';
-import { Card, Button } from 'react-bootstrap';
+import { useRouter } from 'next/navigation';
+import {
+  Button, CardHeader, Card, CardBody, CardFooter,
+} from '@nextui-org/react';
 // import Link from 'next/link';
 import { deleteTrial } from '../utils/data/trialsData';
 
@@ -23,21 +27,20 @@ export default function TrialCard({ trialObj, onUpdate }) {
 
   return (
 
-    <Card style={{ width: '18rem' }} className="card-color">
-      <Card.Header>
-        <div className="d-flex justify-content-between">
-          <span>{trialObj.title}</span>
-          <span>{trialObj.nct_id}</span>
-        </div>
-      </Card.Header>
-      <Card.Body><Card.Text>{trialObj.phase}</Card.Text>
-        <Card.Text>{trialObj.eligibility}</Card.Text>
-        <Card.Text>{trialObj.overall_status}</Card.Text>
-        <Card.Text>{trialObj.study_type.name}</Card.Text>
-        <Card.Text>{trialObj.study_first_submit_date}</Card.Text>
-        <Card.Text>{trialObj.last_update_submit_date}</Card.Text>
-      </Card.Body>
-      <Card.Footer className="text-muted d-flex flex-row justify-content-between">
+    <Card className="max-w-[400px]">
+      <CardHeader className="flex justify-between">
+        <span>{trialObj.title}</span>
+        <span>{trialObj.nct_id}</span>
+      </CardHeader>
+      <CardBody>
+        <div>{trialObj.phase}</div>
+        <div>{trialObj.eligibility}</div>
+        <div>{trialObj.overall_status}</div>
+        <div>{trialObj.study_type}</div>
+        <div>{trialObj.study_first_submit_date}</div>
+        <div>{trialObj.last_update_submit_date}</div>
+      </CardBody>
+      <CardFooter>
         <Button variant="primary" onClick={() => trialDetail(trialObj.id)} type="info">
           Details
         </Button>
@@ -47,7 +50,7 @@ export default function TrialCard({ trialObj, onUpdate }) {
         <Button variant="danger" type="delete" onClick={deleteThisTrial}>
           Delete
         </Button>
-      </Card.Footer>
+      </CardFooter>
     </Card>
   );
 }
@@ -62,9 +65,7 @@ TrialCard.propTypes = {
     eligibility: PropTypes.string.isRequired,
     study_first_submit_date: PropTypes.string.isRequired,
     last_update_submit_date: PropTypes.string.isRequired,
-    study_type: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-    }),
+    study_type: PropTypes.string.isRequired,
   }).isRequired,
   onUpdate: PropTypes.func.isRequired,
 };

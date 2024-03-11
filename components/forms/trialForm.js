@@ -1,14 +1,17 @@
-import { useRouter } from 'next/router';
+'use client';
+
+import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Input, Select, SelectItem } from '@nextui-org/react';
 import { useAuth } from '../../utils/context/authContext';
-import { createTrial, getStudyTypes, updateTrial } from '../../utils/data/trialsData';
+import { createTrial, updateTrial } from '../../utils/data/trialsData';
+import { statusOptions } from '../../utils/data/lookupData';
 
 const initialState = {
   nct_id: '',
   title: '',
-  study_type: {},
+  study_type: '',
   overall_status: '',
   brief_summary: '',
   phase: '',
@@ -17,15 +20,13 @@ const initialState = {
   last_update_submit_date: '',
 };
 
-const TrialForm = ({ trialObj }) => {
-  const [studyTypes, setStudyTypes] = useState([]);
+const TrialForm = ({ trialObj = initialState }) => {
   const [formTrialData, setFormTrialData] = useState(initialState);
 
   const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
-    getStudyTypes().then(setStudyTypes);
     if (trialObj.id) {
       setFormTrialData({
         id: trialObj.id,
@@ -85,65 +86,45 @@ const TrialForm = ({ trialObj }) => {
 
   return (
     <>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>NCT</Form.Label>
-          <Form.Control name="nct_id" required value={formTrialData.nct_id} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Title</Form.Label>
-          <Form.Control name="title" required value={formTrialData.title} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Status</Form.Label>
-          <Form.Control name="overall_status" required value={formTrialData.overall_status} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Phase</Form.Label>
-          <Form.Control name="phase" required value={formTrialData.phase} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Eligibility</Form.Label>
-          <Form.Control name="eligibility" required value={formTrialData.eligibility} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Study first submit date</Form.Label>
-          <Form.Control
-            type="date"
-            name="study_first_submit_date"
-            required
-            value={formTrialData.study_first_submit_date}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Last update submit date</Form.Label>
-          <Form.Control
-            type="date"
-            name="last_update_submit_date"
-            required
-            value={formTrialData.last_update_submit_date}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Study Type</Form.Label>
-          <Form.Select
-            name="study_type"
-            required
-            value={formTrialData.study_type}
-            onChange={handleChange}
-          >
-            <option value="">Select a study type</option>
-            {studyTypes.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
-        <Button variant="primary" type="submit"> {trialObj.id ? 'Update' : 'Create'} Trial </Button>
-      </Form>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <Input label="NCT" name="nct_id" required value={formTrialData.nct_id} onChange={handleChange} />
+        <Input label="Title" name="title" required value={formTrialData.title} onChange={handleChange} />
+        <Select label="Overall Status" name="overall_status" required value={formTrialData.overall_status} onChange={handleChange}>
+          {statusOptions.map((status) => (
+            <SelectItem key={status.uid} value={status.name}>
+              {status.name}
+            </SelectItem>
+          ))}
+        </Select>
+
+        <Input label="Phase" name="phase" required value={formTrialData.phase} onChange={handleChange} />
+        <Input label="Eligibility" name="eligibility" required value={formTrialData.eligibility} onChange={handleChange} />
+
+        <Input
+          type="date"
+          label="Study First Submit Date"
+          name="study_first_submit_date"
+          required
+          value={formTrialData.study_first_submit_date}
+          onChange={handleChange}
+        />
+        <Input
+          type="date"
+          label="Last Update Submit Date"
+          name="last_update_submit_date"
+          required
+          value={formTrialData.last_update_submit_date}
+          onChange={handleChange}
+        />
+
+        <Input
+          label="Study Type"
+          name="study_type"
+          required
+          value={formTrialData.study_type}
+          onChange={handleChange}
+        />
+      </form>
     </>
   );
 };
@@ -158,15 +139,8 @@ TrialForm.propTypes = {
     eligibility: PropTypes.string,
     study_first_submit_date: PropTypes.string,
     last_update_submit_date: PropTypes.string,
-    study_type: PropTypes.shape({
-      id: PropTypes.number,
-      name: PropTypes.string,
-    }),
+    study_type: PropTypes.string,
   }),
-};
-
-TrialForm.defaultProps = {
-  trialObj: initialState,
 };
 
 export default TrialForm;

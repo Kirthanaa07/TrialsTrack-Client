@@ -1,11 +1,12 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { getSingleTrial } from '../../../utils/data/trialsData';
-import TrialForm from '../../../components/forms/trialForm';
+import { useParams } from 'next/navigation';
+import { getSingleTrial } from '../../../../utils/data/trialsData';
+import TrialForm from '../../../../components/forms/trialForm';
 
 const UpdateTrial = () => {
-  const router = useRouter();
-  const { trialId } = router.query;
+  const { trialId } = useParams();
   const [editTrial, setEditTrial] = useState({});
 
   useEffect(() => {

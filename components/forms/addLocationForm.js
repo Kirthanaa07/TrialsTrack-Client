@@ -1,8 +1,12 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { Button, Form } from 'react-bootstrap';
+import { useParams } from 'next/navigation';
+import { Form } from 'react-bootstrap';
+import { Button } from '@nextui-org/react';
 import { getLocations } from '../../utils/data/locationData';
 import { createTrialLocation } from '../../utils/data/trialLocationData';
+import { useAuth } from '../../utils/context/authContext';
 
 const initialState = {
   location_id: '',
@@ -12,11 +16,11 @@ const initialState = {
 const AddLocationForm = () => {
   const [addLocationFormData, setAddLocationFormData] = useState(initialState);
   const [locations, setLocations] = useState([]);
-  const router = useRouter();
-  const { trialId } = router.query;
+  const { trialId } = useParams();
+  const { user } = useAuth();
 
   useEffect(() => {
-    getLocations().then((data) => setLocations(data));
+    getLocations(user.id).then((data) => setLocations(data));
   }, []);
 
   const handleChange = (e) => {
@@ -63,11 +67,11 @@ const AddLocationForm = () => {
           onChange={handleChange}
         >
           <option value="">Select a Status</option>
-          <option value="Golden Gate Bridge">Active</option>
-          <option value="Eiffel Tower">Not-Recruiting</option>
-          <option value="Sydney Opera House">Active</option>
-          <option value="Taj Mahal">Non - Active</option>
-          <option value="Great Wall of China">Recruiting</option>
+          <option value="Active">Active</option>
+          <option value="Not-Recruiting">Not-Recruiting</option>
+          <option value="Active">Active</option>
+          <option value="Non - Active">Non - Active</option>
+          <option value="Recruiting">Recruiting</option>
         </Form.Select>
       </Form.Group>
       <br />

@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from 'react';
+'use client';
 
-import { useRouter } from 'next/router';
-import { Button } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Button } from '@nextui-org/react';
 import { getLocations } from '../../utils/data/locationData';
 import LocationCard from '../../components/LocationCard';
+import { useAuth } from '../../utils/context/authContext';
 
 function Home() {
   const [locations, setLocations] = useState([]);
+  const { user } = useAuth();
 
   const router = useRouter();
   const getAllLocations = () => {
-    getLocations().then(setLocations);
+    getLocations(user.id).then(setLocations);
   };
 
   useEffect(() => {

@@ -1,4 +1,6 @@
-import TrialForm from '../../components/forms/trialForm';
+'use client';
+
+import TrialForm from '../../../components/forms/trialForm';
 
 const NewTrial = () => (
   <div className="p-3">
