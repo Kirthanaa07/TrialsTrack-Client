@@ -3,22 +3,24 @@
 import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { Form } from 'react-bootstrap';
-import { Button } from '@nextui-org/react';
-import { useAuth } from '../../utils/context/authContext';
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
 import { createLocation, updateLocation } from '../../utils/data/locationData';
+import { useAuth } from '../../utils/context/authContext';
 
 const initialState = {
   name: '',
   address: '',
   city: '',
   state: '',
-  zip: 0,
+  zip: '',
   country: '',
+  geo_lat: '',
+  geo_lon: ''
 };
 
-const LocationForm = ({ existingLocation }) => {
+const LocationForm = ({ existingLocation = initialState, onSave }) => {
   const [formLocationData, setFormLocationData] = useState(initialState);
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const router = useRouter();
   const { user } = useAuth();
@@ -32,9 +34,10 @@ const LocationForm = ({ existingLocation }) => {
         address: existingLocation.address,
         city: existingLocation.city,
         state: existingLocation.state,
-        zip: existingLocation.zip ? Number(existingLocation.zip) : '',
+        zip: existingLocation.zip,
         country: existingLocation.country,
-        user_id: user.id,
+        geo_lat: existingLocation.geo_lat,
+        geo_lon: existingLocation.geo_lon,
       });
     }
   }, [existingLocation, user]);
@@ -57,60 +60,78 @@ const LocationForm = ({ existingLocation }) => {
         address: formLocationData.address,
         city: formLocationData.city,
         state: formLocationData.state,
-        zip: Number(formLocationData.zip),
+        zip: formLocationData.zip,
         country: formLocationData.country,
-        user_id: user.id,
+        geo_lat: formLocationData.geo_lat,
+        geo_lon: formLocationData.geo_lon,
       };
-      updateLocation(update).then(() => router.push('/locations'));
+      updateLocation(update).then(() => {
+        if (onSave) onSave();
+      });
     } else {
       const location = {
         name: formLocationData.name,
         address: formLocationData.address,
         city: formLocationData.city,
         state: formLocationData.state,
-        zip: Number(formLocationData.zip),
+        zip: formLocationData.zip,
         country: formLocationData.country,
-        user_id: user.id,
+        geo_lat: formLocationData.geo_lat,
+        geo_lon: formLocationData.geo_lon,
       };
-      createLocation(location).then(() => router.push('/locations'));
+      createLocation(location).then(() => {
+        if (onSave) onSave();
+      });
     }
   };
 
   return (
     <>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label>Name</Form.Label>
-          <Form.Control name="name" required value={formLocationData.name} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Address</Form.Label>
-          <Form.Control name="address" required value={formLocationData.address} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>City</Form.Label>
-          <Form.Control name="city" required value={formLocationData.city} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>State</Form.Label>
-          <Form.Control name="state" required value={formLocationData.state} onChange={handleChange} />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Zip</Form.Label>
-          <Form.Control
-            type="number"
-            name="zip"
-            required
-            value={formLocationData.zip}
-            onChange={handleChange}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
-          <Form.Label>Country</Form.Label>
-          <Form.Control name="country" required value={formLocationData.country} onChange={handleChange} />
-        </Form.Group>
-        <Button variant="primary" type="submit"> {existingLocation.id ? 'Update' : 'Create'} Location </Button>
-      </Form>
+      {existingLocation.id ? (
+        <Button isIconOnly color="success" variant="faded" onPress={onOpen} endContent={<span className="material-symbols-outlined">edit</span>} />
+      ) : (
+        <Button color="primary" onPress={onOpen} endContent={<span className="material-symbols-outlined">add</span>}>
+          Add Location
+        </Button>
+      )}
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="4xl">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">{existingLocation.id ? 'Update Location' : 'Add Location'}</ModalHeader>
+              <ModalBody>
+                <form id="location-form" onSubmit={handleSubmit} className="flex flex-row gap-4">
+                  <div className="flex flex-col grow gap-4">
+                    <Input label="Name" name="name" required value={formLocationData.name} onChange={handleChange} />
+                    <Input label="Address" name="address" required value={formLocationData.address} onChange={handleChange} />
+                    <Input label="City" name="city" required value={formLocationData.city} onChange={handleChange} />
+                    <Input label="State" name="state" required value={formLocationData.state} onChange={handleChange} />
+                  </div>
+                  <div className="flex flex-col grow gap-4">
+                    <Input label="Zip" name="zip" required value={formLocationData.zip} onChange={handleChange} />
+                    <Input label="Country" name="country" required value={formLocationData.country} onChange={handleChange} />
+                    <Input label="Latitude" name="geo_lat" required value={formLocationData.geo_lat} onChange={handleChange} />
+                    <Input label="Longitude" name="geo_lon" required value={formLocationData.geo_lon} onChange={handleChange} />
+                  </div>
+                </form>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button
+                  color="primary"
+                  type="submit"
+                  form="location-form"
+                  onPress={onClose}
+                >
+                  Save
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 };
@@ -122,12 +143,11 @@ LocationForm.propTypes = {
     address: PropTypes.string,
     city: PropTypes.string,
     state: PropTypes.string,
-    zip: PropTypes.number,
+    zip: PropTypes.string,
     country: PropTypes.string,
+    geo_lat: PropTypes.string,
+    geo_lon: PropTypes.string,
   }),
 };
 
-LocationForm.defaultProps = {
-  existingLocation: initialState,
-};
 export default LocationForm;

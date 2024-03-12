@@ -39,7 +39,7 @@ function Signin() {
           />
         </CardBody>
       </Card>
-      <Button type="button" size="lg" className=" bg-[#779ed4]" onClick={signIn}>
+      <Button type="button" size="lg" className="bg-[#5190b4]" onClick={signIn}>
         Sign In
       </Button>
     </div>

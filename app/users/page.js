@@ -48,7 +48,7 @@ function Users() {
 
   React.useEffect(() => {
     getAllUsers();
-  }, [user.id]);
+  }, []);
 
   const hasSearchFilter = Boolean(filterValue);
 

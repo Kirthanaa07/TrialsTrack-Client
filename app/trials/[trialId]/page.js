@@ -125,7 +125,7 @@ function SingleTrial() {
               zoom={14}
               center={coordinates}
               mapTypeId={google.maps.MapTypeId.ROADMAP}
-              mapContainerStyle={{ width: '50rem', height: '24rem' }}
+              mapContainerStyle={{ width: '40rem', height: '24rem' }}
             >
               <MarkerF position={coordinates} />
             </GoogleMap>

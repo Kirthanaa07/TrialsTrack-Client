@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
   Table,
   TableHeader,
@@ -19,7 +19,7 @@ import {
   Pagination,
 } from '@nextui-org/react';
 import { useAuth } from '../../../../utils/context/authContext';
-import PatientForm from '../../../../components/forms/patientForm';
+import TrialLocationPatientForm from '../../../../components/forms/trialLocationPatientForm';
 import { deleteTrialLocationPatient, getTrialLocationPatients } from '../../../../utils/data/trialLocationPatientData';
 import { patientColumns, patientStatusColorMap, patientStatusOptions } from '../../../../utils/data/lookupData';
 import { capitalize } from '../../../../utils/utils';
@@ -32,25 +32,26 @@ function Patients() {
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState('all');
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const { trialLocationId } = useParams();
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: 'nct_id',
-    direction: 'descending',
+    column: 'name',
+    direction: 'ascending',
   });
   const [page, setPage] = React.useState(1);
 
   const { user } = useAuth();
 
-  function getAllTrialPatients() {
-    getTrialLocationPatients(user.location_id).then(setTrialLocationPatients);
+  const getAllTrialPatients = () => {
+    getTrialLocationPatients(trialLocationId).then(setTrialLocationPatients);
   }
 
-  function deleteThisTrialLocationPatient(id) {
+  const deleteThisTrialLocationPatient = (id) => {
     deleteTrialLocationPatient(id).then(() => getAllTrialPatients());
   }
 
   React.useEffect(() => {
     getAllTrialPatients();
-  }, [user.id]);
+  }, []);
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -62,9 +63,9 @@ function Patients() {
   const filteredItems = React.useMemo(() => {
     let filteredTrialLocationPatients = [...trialLocationPatients];
     if (hasSearchFilter) {
-      filteredTrialLocationPatients = filteredTrialLocationPatients.filter((u) => u.title.toLowerCase().includes(filterValue.toLowerCase())
-        || u.nct_id.toLowerCase().includes(filterValue.toLowerCase())
-        || u.brief_summary.toLowerCase().includes(filterValue.toLowerCase()));
+      filteredTrialLocationPatients = filteredTrialLocationPatients.filter((u) => u.patient.user.name.toLowerCase().includes(filterValue.toLowerCase())
+        || u.researcher.name.toLowerCase().includes(filterValue.toLowerCase())
+        || u.status.toLowerCase().includes(filterValue.toLowerCase()));
     }
     if (statusFilter !== 'all' && Array.from(statusFilter).length !== patientStatusOptions.length) {
       filteredTrialLocationPatients = filteredTrialLocationPatients.filter((trialLocationPatient) => Array.from(statusFilter).includes(trialLocationPatient.status.toLowerCase()));
@@ -120,7 +121,7 @@ function Patients() {
           <>
             {user.role === 'Admin' || user.role === 'Researcher' ? (
               <div className="relative flex justify-end items-center gap-2">
-                <PatientForm existingPatient={trialLocationPatient} onSave={() => getAllTrialPatients()} />
+                <TrialLocationPatientForm existingTrialLocationPatient={trialLocationPatient} onSave={() => getAllTrialPatients()} />
                 <DeleteWithConfirm onConfirm={() => deleteThisTrialLocationPatient(trialLocationPatient.id)} />
               </div>
             ) : <></>}
@@ -218,12 +219,12 @@ function Patients() {
             </DropdownMenu>
           </Dropdown>
           {user.role === 'Admin' || user.role === 'Researcher' ? (
-            <PatientForm onSave={() => getAllTrialPatients()} />
+            <TrialLocationPatientForm onSave={() => getAllTrialPatients()} />
           ) : <></>}
         </div>
       </div>
       <div className="flex justify-between items-center">
-        <span className="text-default-400 text-small">Total {trialLocationPatients.length} trials</span>
+        <span className="text-default-400 text-small">Total {trialLocationPatients.length} patients</span>
         <label className="flex items-center text-default-400 text-small">
           Rows per page:
           <select

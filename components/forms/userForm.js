@@ -55,7 +55,7 @@ const UserForm = ({ existingUser = initialState, onSave }) => {
       return true;
     });
     setFilteredRoleOptions(options);
-  }, [existingUser]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

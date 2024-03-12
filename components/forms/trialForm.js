@@ -50,7 +50,7 @@ const TrialForm = ({ trialObj = initialState, onSave }) => {
         user_id: user.id,
       });
     }
-  }, [trialObj, user]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
