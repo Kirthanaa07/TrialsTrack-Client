@@ -23,19 +23,13 @@ function Signin() {
     >
       <Card className="min-w-xl self-stretch">
         <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-          <Image
-            alt="BackEnd capstone"
-            className="object-cover rounded-xl"
-            src="/logo_dark_theme.png"
-            width={900}
-          />
         </CardHeader>
         <CardBody className="overflow-visible py-2">
           <Image
             alt="BackEnd capstone"
             className="object-cover rounded-xl"
-            src="/trialsTrack.jpg"
-            width={900}
+            src="/TRIALS_TRACK.png"
+            width={500}
           />
         </CardBody>
       </Card>

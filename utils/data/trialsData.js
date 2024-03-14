@@ -61,7 +61,6 @@ const importTrials = (nctIds) => new Promise((resolve, reject) => {
     },
     body: JSON.stringify(nctIds),
   })
-    .then((response) => response.json())
     .then(resolve)
     .catch(reject);
 });
