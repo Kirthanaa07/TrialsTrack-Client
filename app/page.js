@@ -32,6 +32,8 @@ import { statusColorMap, statusOptions, trialColumns } from '../utils/data/looku
 import NCTImportForm from '../components/forms/nctImportForm';
 
 function Home() {
+  // https://nextui.org/docs/components/table#use-case-example
+
   const INITIAL_VISIBLE_COLUMNS = ['nct_id', 'title', 'overall_status', 'study_type', 'phase', 'brief_summary', 'actions'];
   const [trials, setTrials] = React.useState([]);
   const [filterValue, setFilterValue] = React.useState('');
@@ -62,6 +64,7 @@ function Home() {
     return trialColumns.filter((column) => Array.from(visibleColumns).includes(column.id));
   }, [visibleColumns]);
 
+  // this function gets called when filterValue changes (search input) or statusFilter changes (top right dropdown). Specify fields to search on. NCTID, Title, Brief Summary.
   const filteredItems = React.useMemo(() => {
     let filteredTrials = [...trials];
     if (hasSearchFilter) {
@@ -105,7 +108,7 @@ function Home() {
       case 'phase':
       case 'brief_summary':
         return (
-          <p className="text-bold text-small capitalize">{cellValue}</p>
+          <p className="capitalize text-bold text-small">{cellValue}</p>
         );
       case 'overall_status':
         color = statusColorMap[trial.overall_status] ? statusColorMap[trial.overall_status] : 'warning';
@@ -157,11 +160,11 @@ function Home() {
 
   const topContent = React.useMemo(() => (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between gap-3 items-end">
+      <div className="flex items-end justify-between gap-3">
         <Input
           isClearable
           className="w-full sm:max-w-[44%]"
-          placeholder="Search by name..."
+          placeholder="Search by nct,title,brief summary..."
           startContent={<span className="material-symbols-outlined">search</span>}
           value={filterValue}
           onClear={() => onClear()}
@@ -210,6 +213,7 @@ function Home() {
               ))}
             </DropdownMenu>
           </Dropdown>
+          {/* only Admins can see buttons to import and add new trial */}
           {user.role === 'Admin' ? (
             <>
               <Button color="secondary" onPress={onOpenNCTModal} endContent={<span className="material-symbols-outlined">download</span>}>
@@ -220,7 +224,7 @@ function Home() {
           ) : <></>}
         </div>
       </div>
-      <div className="flex justify-between items-center">
+      <div className="flex items-center justify-between">
         <span className="text-default-400 text-small">Total {trials.length} trials</span>
         <label className="flex items-center text-default-400 text-small">
           Rows per page:
@@ -246,7 +250,7 @@ function Home() {
   ]);
 
   const bottomContent = React.useMemo(() => (
-    <div className="py-2 px-2 flex justify-between items-center">
+    <div className="flex items-center justify-between px-2 py-2">
       <span className="w-[30%] text-small text-default-400" />
       <Pagination
         isCompact
@@ -269,7 +273,7 @@ function Home() {
   ), [items.length, page, pages, hasSearchFilter]);
 
   return (
-    <div className="p-4 pt-8 flex grow">
+    <div className="flex p-4 pt-8 grow">
       <Table
         aria-label="My Clinical Trials"
         isHeaderSticky
@@ -309,6 +313,7 @@ function Home() {
             <>
               <ModalHeader className="flex flex-col gap-1">Import Trial</ModalHeader>
               <ModalBody>
+                {/* onSave refreshes grid after saving form */}
                 <NCTImportForm onSave={() => getAllTrials()} />
               </ModalBody>
               <ModalFooter>

@@ -119,7 +119,7 @@ const UserForm = ({ existingUser = initialState, onSave }) => {
               <ModalHeader className="flex flex-col gap-1">{existingUser.id ? 'Update User' : 'Add User'}</ModalHeader>
               <ModalBody>
                 <form id="user-form" onSubmit={handleSave} className="flex flex-col gap-4">
-                {existingUser.id ? <div>{userFormData.uid}</div> : <></>}
+                  {existingUser.id ? <div>{userFormData.uid}</div> : <></>}
                   <Input
                     label="UID"
                     name="uid"
@@ -142,7 +142,6 @@ const UserForm = ({ existingUser = initialState, onSave }) => {
                   </Select>
                   <Input label="Name" name="name" required value={userFormData.name} onChange={handleChange} />
                   <Input label="Email" name="email" required value={userFormData.email} onChange={handleChange} />
-                  
                   <Select
                     label="Location"
                     name="location_id"

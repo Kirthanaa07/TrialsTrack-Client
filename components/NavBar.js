@@ -45,11 +45,11 @@ export default function NavBar() {
         </div>
         <NavbarItem>
           {/* <div className="flex flex-col"> */}
-            <div className="flex gap-3 items-center">
-              <Avatar src="/pr.ks1.jpg" className="w-10 h-10 " />
-            </div>
-            {/* <span className="font-bold">{user.fbUser.displayName}</span> */}
-            <span className="italic">{user.role}</span>
+          <div className="flex items-center gap-3">
+            <Avatar isBordered color="secondary" className="w-10 h-10 " src={user.fbUser.photoURL}> </Avatar>
+          </div>
+          {/* <span className="font-bold">{user.fbUser.displayName}</span> */}
+          <span className="italic">{user.role}</span>
           {/* </div> */}
         </NavbarItem>
         <Button

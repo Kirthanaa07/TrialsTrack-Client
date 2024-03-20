@@ -3,7 +3,9 @@
 import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
+import {
+  Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure,
+} from '@nextui-org/react';
 import { createLocation, updateLocation } from '../../utils/data/locationData';
 import { useAuth } from '../../utils/context/authContext';
 
@@ -15,7 +17,7 @@ const initialState = {
   zip: '',
   country: '',
   geo_lat: '',
-  geo_lon: ''
+  geo_lon: '',
 };
 
 const LocationForm = ({ existingLocation = initialState, onSave }) => {

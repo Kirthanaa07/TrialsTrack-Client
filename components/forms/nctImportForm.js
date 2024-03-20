@@ -26,7 +26,7 @@ const NCTImportForm = ({ onSave }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (formNctData.nctIds && formNctData.nctIds) {
+    if (formNctData.nctIds) {
       const nctIds = formNctData.nctIds.split(';').flatMap(((nct) => nct.trim().split(','))).map((nct) => nct.trim());
       importTrials(nctIds).then(() => {
         if (onSave) onSave(user.id);
