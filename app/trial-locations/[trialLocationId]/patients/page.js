@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import {
   Table,
   TableHeader,
@@ -43,11 +43,11 @@ function Patients() {
 
   const getAllTrialPatients = () => {
     getTrialLocationPatients(trialLocationId).then(setTrialLocationPatients);
-  }
+  };
 
   const deleteThisTrialLocationPatient = (id) => {
     deleteTrialLocationPatient(id).then(() => getAllTrialPatients());
-  }
+  };
 
   React.useEffect(() => {
     getAllTrialPatients();

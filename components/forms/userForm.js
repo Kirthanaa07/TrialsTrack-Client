@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from '@nextui-org/react';
+import {
+  Button, Input, Modal, ModalBody,
+  ModalContent, ModalFooter, ModalHeader,
+  Select, SelectItem, useDisclosure,
+} from '@nextui-org/react';
 import { roleOptions } from '../../utils/data/lookupData';
 import { createUser, updateUser } from '../../utils/data/userData';
 import { useAuth } from '../../utils/context/authContext';
@@ -84,8 +88,7 @@ const UserForm = ({ existingUser = initialState, onSave }) => {
       updateUser(dbUser).then(() => {
         if (onSave) onSave();
       });
-    }
-    else {
+    } else {
       const dbUser = {
         name: userFormData.name,
         email: userFormData.email,
@@ -126,7 +129,8 @@ const UserForm = ({ existingUser = initialState, onSave }) => {
                     className={existingUser.id ? 'hidden' : ''}
                     required
                     value={userFormData.uid}
-                    onChange={handleChange} />
+                    onChange={handleChange}
+                  />
                   {existingUser.id ? <div>{userFormData.role}</div> : <></>}
                   <Select
                     label="Role"
@@ -218,7 +222,10 @@ UserForm.propTypes = {
     email: PropTypes.string,
     role: PropTypes.string,
     uid: PropTypes.string,
-  })
+  }),
+};
+UserForm.defaultProps = {
+  existingUser: initialState,
 };
 
 export default UserForm;

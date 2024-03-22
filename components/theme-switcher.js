@@ -1,9 +1,8 @@
-import { Button } from "@nextui-org/react";
-import { useTheme } from "next-themes";
-
+import { Button } from '@nextui-org/react';
+import { useTheme } from 'next-themes';
 
 const ThemeSwitcher = () => {
-  const { theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme();
 
   return (
     <div>

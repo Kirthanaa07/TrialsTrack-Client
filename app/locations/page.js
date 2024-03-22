@@ -39,11 +39,11 @@ function Locations() {
 
   const getAllLocations = () => {
     getLocations().then(setLocations);
-  }
+  };
 
   const deleteThisLocation = (id) => {
     deleteLocation(id).then(() => getAllLocations());
-  }
+  };
 
   React.useEffect(() => {
     getAllLocations();
@@ -87,7 +87,6 @@ function Locations() {
   }), [sortDescriptor, items]);
 
   const renderCell = React.useCallback((location, columnKey) => {
-    let color = 'warning';
     switch (columnKey) {
       case 'name':
         return <p className="text-bold text-small capitalize">{location.name}</p>;

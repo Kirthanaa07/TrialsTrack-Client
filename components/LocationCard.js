@@ -3,7 +3,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, Card, CardHeader, CardBody, CardFooter } from '@nextui-org/react';
+import {
+  Button, Card, CardHeader,
+  CardBody, CardFooter,
+} from '@nextui-org/react';
 import { deleteLocation } from '../utils/data/locationData';
 
 export default function LocationCard({ locationObj, onUpdate }) {

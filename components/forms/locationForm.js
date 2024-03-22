@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import {
@@ -23,8 +22,6 @@ const initialState = {
 const LocationForm = ({ existingLocation = initialState, onSave }) => {
   const [formLocationData, setFormLocationData] = useState(initialState);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
-  const router = useRouter();
   const { user } = useAuth();
 
   useEffect(() => {
@@ -103,13 +100,13 @@ const LocationForm = ({ existingLocation = initialState, onSave }) => {
               <ModalHeader className="flex flex-col gap-1">{existingLocation.id ? 'Update Location' : 'Add Location'}</ModalHeader>
               <ModalBody>
                 <form id="location-form" onSubmit={handleSubmit} className="flex flex-row gap-4">
-                  <div className="flex flex-col grow gap-4">
+                  <div className="flex flex-col gap-4 grow">
                     <Input label="Name" name="name" required value={formLocationData.name} onChange={handleChange} />
                     <Input label="Address" name="address" required value={formLocationData.address} onChange={handleChange} />
                     <Input label="City" name="city" required value={formLocationData.city} onChange={handleChange} />
                     <Input label="State" name="state" required value={formLocationData.state} onChange={handleChange} />
                   </div>
-                  <div className="flex flex-col grow gap-4">
+                  <div className="flex flex-col gap-4 grow">
                     <Input label="Zip" name="zip" required value={formLocationData.zip} onChange={handleChange} />
                     <Input label="Country" name="country" required value={formLocationData.country} onChange={handleChange} />
                     <Input label="Latitude" name="geo_lat" required value={formLocationData.geo_lat} onChange={handleChange} />
@@ -151,5 +148,7 @@ LocationForm.propTypes = {
     geo_lon: PropTypes.string,
   }),
 };
-
+LocationForm.defaultProps = {
+  existingLocation: initialState,
+};
 export default LocationForm;

@@ -1,6 +1,9 @@
 'use client';
 
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from '@nextui-org/react';
+import {
+  Button, Modal, ModalBody, ModalContent, ModalFooter,
+  ModalHeader, useDisclosure,
+} from '@nextui-org/react';
 import React from 'react';
 
 export default function DeleteWithConfirm({ onConfirm }) {
