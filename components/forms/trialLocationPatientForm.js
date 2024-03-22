@@ -167,10 +167,12 @@ TrialLocationPatientForm.propTypes = {
       }),
     }),
   }),
+  onSave: PropTypes.func,
 };
 
 TrialLocationPatientForm.defaultProps = {
   existingTrialLocationPatient: {},
+  onSave: () => { },
 };
 
 export default TrialLocationPatientForm;
