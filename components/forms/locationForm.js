@@ -147,8 +147,10 @@ LocationForm.propTypes = {
     geo_lat: PropTypes.string,
     geo_lon: PropTypes.string,
   }),
+  onSave: PropTypes.func,
 };
 LocationForm.defaultProps = {
   existingLocation: initialState,
+  onSave: () => { },
 };
 export default LocationForm;

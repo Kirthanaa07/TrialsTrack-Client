@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { NextUIProvider } from '@nextui-org/react';
 import {
   ThemeProvider as NextThemesProvider,
@@ -33,3 +34,9 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+RootLayout.propTypes = {
+  children: React.ReactNode,
+};
+RootLayout.defaultProps = {
+  children: {},
+};

@@ -223,9 +223,11 @@ UserForm.propTypes = {
     role: PropTypes.string,
     uid: PropTypes.string,
   }),
+  onSave: PropTypes.func,
 };
 UserForm.defaultProps = {
   existingUser: initialState,
+  onSave: () => {},
 };
 
 export default UserForm;

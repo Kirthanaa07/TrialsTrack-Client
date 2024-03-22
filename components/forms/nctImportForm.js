@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { PropTypes } from 'prop-types';
 import { useState } from 'react';
 import { Input } from '@nextui-org/react';
 import { useAuth } from '../../utils/context/authContext';
@@ -12,8 +12,6 @@ const initialState = {
 
 const NCTImportForm = ({ onSave }) => {
   const [formNctData, setFormNctData] = useState(initialState);
-
-  const router = useRouter();
   const { user } = useAuth();
 
   const handleChange = (e) => {
@@ -44,6 +42,13 @@ const NCTImportForm = ({ onSave }) => {
       </form>
     </>
   );
+};
+NCTImportForm.propTypes = {
+  onSave: PropTypes.func,
+};
+
+NCTImportForm.defaultProps = {
+  onSave: () => { },
 };
 
 export default NCTImportForm;

@@ -1,5 +1,6 @@
 'use client';
 
+import PropTypes from 'prop-types';
 import {
   Button, Modal, ModalBody, ModalContent, ModalFooter,
   ModalHeader, useDisclosure,
@@ -33,3 +34,9 @@ export default function DeleteWithConfirm({ onConfirm }) {
     </>
   );
 }
+DeleteWithConfirm.propTypes = {
+  onConfirm: PropTypes.func,
+};
+DeleteWithConfirm.defaultProps = {
+  onConfirm: () => {},
+};

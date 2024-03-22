@@ -1,9 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure } from '@nextui-org/react';
+import {
+  Button, Input, Modal, ModalBody, ModalContent,
+  ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure,
+} from '@nextui-org/react';
 import { useAuth } from '../../utils/context/authContext';
 import { createTrial, updateTrial } from '../../utils/data/trialsData';
 import { statusOptions, studyTypeOptions } from '../../utils/data/lookupData';
@@ -26,8 +28,6 @@ const initialState = {
 
 const TrialForm = ({ trialObj = initialState, onSave }) => {
   const [formTrialData, setFormTrialData] = useState(initialState);
-
-  const router = useRouter();
   const { user } = useAuth();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
@@ -204,6 +204,11 @@ TrialForm.propTypes = {
     study_type: PropTypes.string,
     imported_date: PropTypes.string,
   }),
+  onSave: PropTypes.func,
 };
 
+TrialForm.defaultProps = {
+  trialObj: initialState,
+  onSave: () => { },
+};
 export default TrialForm;
