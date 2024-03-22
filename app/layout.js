@@ -1,7 +1,9 @@
 'use client';
 
 import { NextUIProvider } from '@nextui-org/react';
-import {ThemeProvider as NextThemesProvider} from "next-themes";
+import {
+  ThemeProvider as NextThemesProvider,
+} from 'next-themes';
 import ViewDirectorBasedOnUserAuthStatus from '../utils/ViewDirector';
 import { AuthProvider } from '../utils/context/authContext';
 import '../styles/globals.css';
@@ -12,6 +14,7 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning className="flex">
       <head>
         <meta charSet="UTF-8" />
+        {/* material icons */}
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>

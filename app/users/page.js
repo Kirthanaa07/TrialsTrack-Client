@@ -48,7 +48,7 @@ function Users() {
 
   React.useEffect(() => {
     getAllUsers();
-  }, [user.id]);
+  }, []);
 
   const hasSearchFilter = Boolean(filterValue);
 
@@ -121,13 +121,16 @@ function Users() {
       case 'actions':
         return (
           <>
-            {user.id === dbUser.id ? <div>Unable to modify your own user account</div> : <></>}
-            {user.role === 'Admin' || (user.role === 'Researcher' && dbUser.role === 'Patient') ? (
-              <div className="relative flex justify-end items-center gap-2">
+
+            <div className="relative flex justify-end items-center gap-2">
+              {user.role === 'Admin' || (user.role === 'Researcher' && (dbUser.role === 'Patient' || user.id === dbUser.id)) ? (
                 <UserForm existingUser={dbUser} onSave={() => getAllUsers()} />
+              ) : <></>}
+              {(user.role === 'Admin' || (user.role === 'Researcher' && dbUser.role === 'Patient')) && user.id !== dbUser.id ? (
                 <DeleteWithConfirm onConfirm={() => deleteThisUser(dbUser.id)} />
-              </div>
-            ) : <></>}
+              ) : <></>}
+            </div>
+
           </>
         );
       default:

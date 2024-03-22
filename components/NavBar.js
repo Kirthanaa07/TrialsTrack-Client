@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import {
+  Avatar,
   Button, Image, Navbar, NavbarBrand, NavbarContent, NavbarItem,
 } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
@@ -17,7 +18,7 @@ export default function NavBar() {
 
   return (
     <Navbar maxWidth="full" position="sticky" className="p-4">
-      <NavbarBrand className="m-3"><Image src={theme === 'dark' ? '/logo_dark_theme.png' : '/logo_light_theme.png'} className="logo" /></NavbarBrand>
+      <NavbarBrand className="m-3"><Image src={theme === 'dark' ? '/TRIALSTRACK.png' : '/TRIALSTRACK.png'} className="logo" /></NavbarBrand>
       <NavbarContent justify="center">
         <NavbarItem>
           <Button onClick={() => router.push('/')}>
@@ -43,10 +44,13 @@ export default function NavBar() {
           <Button isIconOnly color="secondary" variant="faded" className="material-symbols-outlined" onClick={() => setTheme('dark')}>dark_mode</Button>
         </div>
         <NavbarItem>
-          <div className="flex flex-col">
-            <span className="font-bold">{user.fbUser.displayName}</span>
-            <span className="italic">{user.role}</span>
+          {/* <div className="flex flex-col"> */}
+          <div className="flex items-center gap-3">
+            <Avatar isBordered color="secondary" className="w-10 h-10 " src={user.fbUser.photoURL}> </Avatar>
           </div>
+          {/* <span className="font-bold">{user.fbUser.displayName}</span> */}
+          <span className="italic">{user.role}</span>
+          {/* </div> */}
         </NavbarItem>
         <Button
           color="danger"

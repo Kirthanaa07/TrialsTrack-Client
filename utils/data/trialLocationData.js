@@ -1,6 +1,6 @@
 import { clientCredentials } from '../client';
 
-const getTrialsLocation = () => new Promise((resolve, reject) => {
+const getTrialLocations = () => new Promise((resolve, reject) => {
   fetch(`${clientCredentials.databaseURL}/trial_locations`)
     .then((response) => response.json())
     .then(resolve)
@@ -52,5 +52,5 @@ const updateTrialLocation = (trialLocation) => new Promise((resolve, reject) => 
 });
 
 export {
-  getSingleTrialLocation, getTrialsLocation, createTrialLocation, deleteTrialLocation, updateTrialLocation,
+  getSingleTrialLocation, getTrialLocations, createTrialLocation, deleteTrialLocation, updateTrialLocation,
 };

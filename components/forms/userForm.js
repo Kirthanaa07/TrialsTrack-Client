@@ -55,7 +55,7 @@ const UserForm = ({ existingUser = initialState, onSave }) => {
       return true;
     });
     setFilteredRoleOptions(options);
-  }, [existingUser]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -119,11 +119,18 @@ const UserForm = ({ existingUser = initialState, onSave }) => {
               <ModalHeader className="flex flex-col gap-1">{existingUser.id ? 'Update User' : 'Add User'}</ModalHeader>
               <ModalBody>
                 <form id="user-form" onSubmit={handleSave} className="flex flex-col gap-4">
-                  <Input label="Name" name="name" required value={userFormData.name} onChange={handleChange} />
-                  <Input label="Email" name="email" required value={userFormData.email} onChange={handleChange} />
-                  <Input label="UID" name="uid" required value={userFormData.uid} onChange={handleChange} />
+                  {existingUser.id ? <div>{userFormData.uid}</div> : <></>}
+                  <Input
+                    label="UID"
+                    name="uid"
+                    className={existingUser.id ? 'hidden' : ''}
+                    required
+                    value={userFormData.uid}
+                    onChange={handleChange} />
+                  {existingUser.id ? <div>{userFormData.role}</div> : <></>}
                   <Select
                     label="Role"
+                    className={existingUser.id ? 'hidden' : ''}
                     name="role"
                     required
                     selectedKeys={[userFormData.role]}
@@ -133,6 +140,8 @@ const UserForm = ({ existingUser = initialState, onSave }) => {
                       <SelectItem key={role.name} value={role.name}>{role.name}</SelectItem>
                     ))}
                   </Select>
+                  <Input label="Name" name="name" required value={userFormData.name} onChange={handleChange} />
+                  <Input label="Email" name="email" required value={userFormData.email} onChange={handleChange} />
                   <Select
                     label="Location"
                     name="location_id"
