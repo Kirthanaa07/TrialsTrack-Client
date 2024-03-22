@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, useDisclosure } from '@nextui-org/react';
 import { getLocations } from '../../utils/data/locationData';
 import { createTrialLocation, updateTrialLocation } from '../../utils/data/trialLocationData';
-import { useAuth } from '../../utils/context/authContext';
 import { statusOptions } from '../../utils/data/lookupData';
 import { getSingleTrial } from '../../utils/data/trialsData';
 
@@ -168,6 +167,9 @@ TrialLocationForm.propTypes = {
     }),
     status: PropTypes.string,
   })
+};
+TrialLocationForm.defaultProps = {
+  existingTrialLocation: initialState,
 };
 
 export default TrialLocationForm;

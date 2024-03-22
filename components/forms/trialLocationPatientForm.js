@@ -1,23 +1,27 @@
 'use client';
 
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import PropTypes from 'prop-types';
-import { useState, useEffect, useMemo } from 'react';
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Textarea, useDisclosure } from '@nextui-org/react';
+import { useState, useMemo } from 'react';
+import {
+  Button, Modal, ModalBody, ModalContent, ModalFooter,
+  ModalHeader, Select, SelectItem, useDisclosure,
+} from '@nextui-org/react';
 import { useAuth } from '../../utils/context/authContext';
-import { patientStatusOptions, studyTypeOptions } from '../../utils/data/lookupData';
-import { createTrialLocationPatient, getPatients, getTrialLocationPatients, updateTrialLocationPatient } from '../../utils/data/trialLocationPatientData';
+import { patientStatusOptions } from '../../utils/data/lookupData';
+import {
+  createTrialLocationPatient, getPatients,
+  getTrialLocationPatients, updateTrialLocationPatient,
+} from '../../utils/data/trialLocationPatientData';
 import { getSingleTrialLocation } from '../../utils/data/trialLocationData';
 
-
 const TrialLocationPatientForm = ({ existingTrialLocationPatient = {}, onSave }) => {
-  const [patient_id, setPatientId] = useState(new Set([]));
-  const [researcher_id, setResearcherId] = useState(new Set([]));
+  const [patientId, setPatientId] = useState(new Set([]));
+  const [researcherId, setResearcherId] = useState(new Set([]));
   const [status, setStatus] = useState(new Set([]));
 
   const [patients, setPatients] = useState();
   const [researchers, setResearchers] = useState();
-  const router = useRouter();
   const { user } = useAuth();
   const { trialLocationId } = useParams();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -52,8 +56,8 @@ const TrialLocationPatientForm = ({ existingTrialLocationPatient = {}, onSave })
       const update = {
         id: existingTrialLocationPatient.id,
         trial_location_id: +trialLocationId,
-        patient_id: patient_id && patient_id.size > 0 ? +[...patient_id][0] : null,
-        researcher_id: researcher_id && researcher_id.size > 0 ? +[...researcher_id][0] : null,
+        patient_id: patientId && patientId.size > 0 ? +[...patientId][0] : null,
+        researcher_id: researcherId && researcherId.size > 0 ? +[...researcherId][0] : null,
         status: status && status.size > 0 ? [...status][0] : null,
       };
       updateTrialLocationPatient(update).then(() => {
@@ -62,8 +66,8 @@ const TrialLocationPatientForm = ({ existingTrialLocationPatient = {}, onSave })
     } else {
       const trialLocationPatient = {
         trial_location_id: +trialLocationId,
-        patient_id: patient_id && patient_id.size > 0 ? +[...patient_id][0] : null,
-        researcher_id: researcher_id && researcher_id.size > 0 ? +[...researcher_id][0] : null,
+        patient_id: patientId && patientId.size > 0 ? +[...patientId][0] : null,
+        researcher_id: researcherId && researcherId.size > 0 ? +[...researcherId][0] : null,
         status: status && status.size > 0 ? [...status][0] : null,
       };
       createTrialLocationPatient(trialLocationPatient).then(() => {
@@ -90,7 +94,7 @@ const TrialLocationPatientForm = ({ existingTrialLocationPatient = {}, onSave })
                 <form onSubmit={handleSubmit} id="trial-form" className="flex flex-row gap-4">
                   <div className="flex flex-col gap-4 grow">
                     {existingTrialLocationPatient.id ? <></> : (
-                      <Select label="Patient" name="patient" required selectedKeys={patient_id} onSelectionChange={setPatientId}>
+                      <Select label="Patient" name="patient" required selectedKeys={patientId} onSelectionChange={setPatientId}>
                         {patients.map((patient) => (
                           <SelectItem key={patient.id} value={patient.id}>
                             {patient.user.name}
@@ -99,17 +103,18 @@ const TrialLocationPatientForm = ({ existingTrialLocationPatient = {}, onSave })
                       </Select>
                     )}
                     {existingTrialLocationPatient.id ? <></> : (
-                      <Select label="Researcher" name="researcher" required selectedKeys={researcher_id} onSelectionChange={setResearcherId}>
+                      <Select label="Researcher" name="researcher" required selectedKeys={researcherId} onSelectionChange={setResearcherId}>
                         {researchers.map((researcher) => (
                           <SelectItem key={researcher.id} value={researcher.id}>
                             {researcher.user.name}
                           </SelectItem>
                         ))}
-                      </Select>)}
+                      </Select>
+                    )}
                     <Select label="Status" name="status" required selectedKeys={status} onSelectionChange={setStatus}>
-                      {patientStatusOptions.map((status) => (
-                        <SelectItem key={status.name} value={status.name}>
-                          {status.name}
+                      {patientStatusOptions.map((patientStatus) => (
+                        <SelectItem key={patientStatus.name} value={patientStatus.name}>
+                          {patientStatus.name}
                         </SelectItem>
                       ))}
                     </Select>
@@ -144,24 +149,28 @@ TrialLocationPatientForm.propTypes = {
       id: PropTypes.number,
       location: PropTypes.shape({
         id: PropTypes.number,
-        name: PropTypes.string
-      })
+        name: PropTypes.string,
+      }),
     }),
     patient: PropTypes.shape({
       id: PropTypes.number,
       user: PropTypes.shape({
         id: PropTypes.number,
-        name: PropTypes.string
-      })
+        name: PropTypes.string,
+      }),
     }),
     researcher: PropTypes.shape({
       id: PropTypes.number,
       user: PropTypes.shape({
         id: PropTypes.number,
-        name: PropTypes.string
-      })
+        name: PropTypes.string,
+      }),
     }),
   }),
+};
+
+TrialLocationPatientForm.defaultProps = {
+  existingTrialLocationPatient: {},
 };
 
 export default TrialLocationPatientForm;
